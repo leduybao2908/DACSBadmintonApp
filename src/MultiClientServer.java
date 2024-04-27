@@ -15,6 +15,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class MultiClientServer extends JFrame {
+    static Socket s;
+	static DataInputStream din;
+	static DataOutputStream dout;
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JTextField msgTxt;
@@ -75,8 +78,20 @@ public class MultiClientServer extends JFrame {
     }
     
     public static void sendMessageToAllClients(String message) {
-        // Iterate through all connected clients and send the message
-    }
+        try {
+			s = new Socket("127.0.0.1",1201);
+			din = new DataInputStream(s.getInputStream());
+			dout = new DataOutputStream(s.getOutputStream());
+			String msgin = "";
+			while(!msgin.equals("exit"))
+			{
+				msgin = din.readUTF();
+				msgArea.setText(msgArea.getText().trim()+"\n Server:\t"+msgin);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+}
 }
 
 class ClientHandler implements Runnable {
