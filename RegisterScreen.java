@@ -1,9 +1,13 @@
 package view;
 
-import java.awt.EventQueue;
+import java.awt.EventQueue; 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import dao.itemDAO;
+import model.employeeModel;
+import model.adminModel;
+
 //import com.mysql.cj.jdbc.Driver;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -38,6 +42,8 @@ public class RegisterScreen extends JFrame {
 	private JLabel lblNewLabel;
 	private JRadioButton rdbtnCashier;
 	private JRadioButton rdbtnAdmin;
+	private JTextField textFieldPhoneNumber;
+	private JPasswordField passwordField;
 	
 	
 	public static void main(String[] args) {
@@ -66,13 +72,13 @@ public class RegisterScreen extends JFrame {
 
         rdbtnCashier = new JRadioButton("Cashier");
         rdbtnCashier.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        rdbtnCashier.setBounds(64, 305, 104, 33);
+        rdbtnCashier.setBounds(64, 381, 104, 33);
         contentPane.add(rdbtnCashier);
         buttonGroup.add(rdbtnCashier);
 
         rdbtnAdmin = new JRadioButton("Admin");
         rdbtnAdmin.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        rdbtnAdmin.setBounds(283, 305, 104, 33);
+        rdbtnAdmin.setBounds(287, 381, 104, 33);
         contentPane.add(rdbtnAdmin);
         buttonGroup.add(rdbtnAdmin);
 		
@@ -102,7 +108,7 @@ public class RegisterScreen extends JFrame {
 	        });
 		
 		ButtonLogin.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		ButtonLogin.setBounds(150, 386, 145, 53);
+		ButtonLogin.setBounds(150, 443, 145, 53);
 		contentPane.add(ButtonLogin);
 		
 		textFieldPassword = new JPasswordField();
@@ -132,22 +138,31 @@ public class RegisterScreen extends JFrame {
 		
 		JButton ButtonRegister = new JButton("REGISTER");
 		ButtonRegister.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		ButtonRegister.setBounds(150, 466, 145, 53);
+		ButtonRegister.setBounds(150, 506, 145, 53);
 		ButtonRegister.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	                String USERNAME = textFieldUsername.getText();
+	            	int ID = itemDAO.getInstanitemDAO().getEmployeeCount() + 1;
+	            	int ADID = itemDAO.getInstanitemDAO().getAdminCount() + 1;
+	                String NAME = textFieldUsername.getText();
 	                String GMAIL = textFieldGmail.getText();
-	                String PASS = textFieldPassword.getText();
+	                String PASSWORD = textFieldPassword.getText();
 	                String CONFIRM = textFieldConfirmpass.getText();
+	                float WORKHOUR = 0;
+	                String PHONENUMBER = textFieldPhoneNumber.getText();
 
 	                // Modify the username based on selection
-	                if (rdbtnCashier.isSelected()) {
-	                    USERNAME += " : Cashier";
-	                } else if (rdbtnAdmin.isSelected()) {
-	                    USERNAME += " : Admin";
-	                }
-	                clearFields();
+	                if (rdbtnCashier.isSelected() && PASSWORD.equals(CONFIRM)) {
+	                	 employeeModel user = new employeeModel(ID, NAME, GMAIL, PASSWORD , PHONENUMBER, WORKHOUR);
+	 	                itemDAO.getInstanitemDAO().insertloginCashier(user);
+	 	               clearFields();
+	 	                } else if (rdbtnAdmin.isSelected() && PASSWORD.equals(CONFIRM)) {
+	 	                	 adminModel admin = new adminModel(ADID,NAME, GMAIL, PASSWORD);
+	 		                itemDAO.getInstanitemDAO().insertloginAdmin(admin);
+	 		               clearFields();
+	 		                }else {
+	 		                	JOptionPane.showMessageDialog(null, "Mật khẩu không khớp!");
+	 		                }        
 	            }
 	        });
 		
@@ -170,6 +185,16 @@ public class RegisterScreen extends JFrame {
 		lblNewLabel.setBounds(0, 0, 459, 640);
 		contentPane.add(lblNewLabel);	
 		
+		textFieldPhoneNumber = new JTextField();
+		textFieldPhoneNumber.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldPhoneNumber.setBounds(185, 302, 248, 37);
+		contentPane.add(textFieldPhoneNumber);
+		
+		JLabel lblPhonenumber = new JLabel("PhoneNumber");
+		lblPhonenumber.setFont(new Font("Tahoma", Font.BOLD, 16));
+		lblPhonenumber.setBounds(10, 302, 158, 37);
+		contentPane.add(lblPhonenumber);
+		
 		setLocationRelativeTo(null);
 		
 	}
@@ -185,6 +210,8 @@ public class RegisterScreen extends JFrame {
         textFieldGmail.setText("");
         textFieldPassword.setText("");
         textFieldConfirmpass.setText("");
+        textFieldPhoneNumber.setText("");
+
     }
 		}
 		
