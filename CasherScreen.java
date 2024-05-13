@@ -15,7 +15,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
  /*import dao.ItemDAO;
-import model.ItemModel;
+import model.productModel;
 import model.ItemModelSell;*/
 import javax.swing.JTabbedPane; 
 import javax.swing.JTable;
@@ -58,7 +58,7 @@ public class CasherScreen extends JFrame {
 	public DefaultTableModel tableModel;
 	public DefaultTableModel tableModel1;
 //	public ItemDAO ItemDAO = new ItemDAO() ; 
-//	ArrayList<ItemModel> result = new ArrayList<ItemModel>();
+//	ArrayList<productModel> result = new ArrayList<productModel>();
 	public JTextField textFieldIDItemSell;
 	public JTextField textFieldNameItemSell;
 	public JTextField textFieldCostSell;
@@ -67,7 +67,7 @@ public class CasherScreen extends JFrame {
 	public int currentCount;
     public static final String TOTAL_KEY = "totalKey";
 	public float totalCost = 0.0f;
-//	public ItemModel itemModel;
+//	public productModel itemModel;
 	private JTextField textFieldCountSellWarehouse;
 	private JTextField textFieldNewCount;
 	private JTextField textFieldFind;
@@ -191,7 +191,7 @@ public class CasherScreen extends JFrame {
                int countsellnew = Integer.parseInt(textFieldCountSellWarehouse.getText());
           /*      ItemModelSell item = new ItemModelSell(iditemsell, nameitemsell, countsell,costinputsell);
                 ItemDAO.getInstanItemDAO().inserttablesell(item);
-                ItemModel itemud = new ItemModel(iditemsell, nameitemsell, countsellnew, costinputsell);
+                productModel itemud = new productModel(iditemsell, nameitemsell, countsellnew, costinputsell);
                 ItemDAO.getInstanItemDAO().update(itemud); */ 
                     // Cập nhật bảng ngay tại đây
                 DefaultTableModel model = (DefaultTableModel) TableTotalSalesList.getModel();
@@ -302,7 +302,7 @@ public class CasherScreen extends JFrame {
                         int Confirm = JOptionPane.showConfirmDialog(CasherScreen.this, "Are you sure ?");
                         if (Confirm==JOptionPane.YES_OPTION)
                         {    
-                      /*  	ItemModel itemud = new ItemModel(iditemsell, nameitemsell, countsellnew, costinputsell);
+                      /*  	productModel itemud = new productModel(iditemsell, nameitemsell, countsellnew, costinputsell);
                         ItemDAO.getInstanItemDAO().update(itemud); */
                         // Cập nhật bảng ngay tại đây
                     DefaultTableModel model = (DefaultTableModel) TableTotalSalesList.getModel();
@@ -375,16 +375,10 @@ public class CasherScreen extends JFrame {
         NewScreen.setVisible(true);
         dispose();
     }
-	public void openLoginScreen() {
-		 
-		LoginScreenn loginNewScreen = new LoginScreenn();    
-		loginNewScreen.setVisible(true);
-        dispose();
-    }
 	
 	public void TableDachSachTongSell() {
 	   tableModel = (DefaultTableModel) TableTotalSalesList.getModel();
-	    ArrayList<ItemModel> itemDAO = new ItemDAO().getInstanItemDAO().selectAll() ;
+	    ArrayList<productModel> itemDAO = new ItemDAO().getInstanItemDAO().selectAll() ;
 	    tableModel.getDataVector().removeAllElements();
 	    tableModel.setRowCount(0); // Clear existing data
 	    for(int i = 0; i < itemDAO.size();i++) {
@@ -394,7 +388,7 @@ public class CasherScreen extends JFrame {
 	} 
 	public void TableDachSachTongManage() {
 	   tableModel1 = (DefaultTableModel) TableTotalManagementList.getModel();
-	    ArrayList<ItemModel> itemDAO = new ItemDAO().getInstanItemDAO().selectAll() ;
+	    ArrayList<productModel> itemDAO = new ItemDAO().getInstanItemDAO().selectAll() ;
 	    tableModel1.getDataVector().removeAllElements();
 	    tableModel1.setRowCount(0); // Clear existing data
 	    for(int i = 0; i < itemDAO.size();i++) {
@@ -410,13 +404,6 @@ public class CasherScreen extends JFrame {
 	    }
 	}
 	
-	public void clearFields() {
-        textFieldIDItem.setText("");
-        textFieldNameItem.setText("");
-        textFieldOldCount.setText("");
-        textFieldCostInput.setText("");
-    }
-	
 	public void refreshTable() {
 	    TableDachSachTongSell();		    
 	    TableDachSachTongManage();
@@ -427,21 +414,14 @@ public class CasherScreen extends JFrame {
 	    String formattedTotal = String.format("%.2f", newTotal);
 	    TextT0talManage.setText(formattedTotal);
 	    Preferences.userNodeForPackage(BigExerciseView.class).putFloat(TOTAL_KEY, newTotal);
-	}
-	
-	public void refreshbutton() {
-		BigExerciseView NewScreen = new BigExerciseView();
-		   
-	    NewScreen.setVisible(true);
-	dispose();
-	}
+	}	
 	
 	private void searchByName(String searchTerm) {
-	    ArrayList<ItemModel> searchResults = ItemDAO.getInstanItemDAO().searchByName(searchTerm);
+	    ArrayList<productModel> searchResults = ItemDAO.getInstanItemDAO().searchByName(searchTerm);
 	    tableModel.getDataVector().removeAllElements();
 	    tableModel.setRowCount(0);
 
-	    for (ItemModel result : searchResults) {
+	    for (productModel result : searchResults) {
 	        tableModel.addRow(result.toObject());
 	    }
 	}
@@ -449,6 +429,28 @@ public class CasherScreen extends JFrame {
 	public float getTotalCost() {
         return totalCost;
     } */
+	
+	public void clearFields() {
+        textFieldIDItem.setText("");
+        textFieldNameItem.setText("");
+        textFieldOldCount.setText("");
+        textFieldCostInput.setText("");
+    }
+	
+	public void refreshbutton() {
+		CasherScreen NewScreen = new CasherScreen();
+		   
+	    NewScreen.setVisible(true);
+	dispose();
+	}
+	
+	public void openLoginScreen() {
+		 
+		LoginScreen loginNewScreen = new LoginScreen();    
+		loginNewScreen.setVisible(true);
+        dispose();
+    }
+	
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
