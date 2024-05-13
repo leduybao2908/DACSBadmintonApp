@@ -1,6 +1,9 @@
 package view;
+
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,7 +11,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.*;
 
 public class MultiClientServer extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -42,6 +44,37 @@ public class MultiClientServer extends JPanel {
         bottomPanel.add(btnSend, BorderLayout.EAST);
 
         add(bottomPanel, BorderLayout.SOUTH);
+
+        // Tự động khởi chạy server socket khi tạo MultiClientServer
+        startServer();
+    }
+
+    public void startServer() {
+        Thread serverThread = new Thread(() -> {
+            try {
+                ServerSocket ss = new ServerSocket(1201);
+                while (true) {
+                    Socket s = ss.accept();
+                    ClientHandler clientHandler = new ClientHandler(s);
+                    clientHandlers.add(clientHandler);
+                    Thread t = new Thread(clientHandler);
+                    t.start();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        serverThread.start();
+    }
+
+    public static void sendMessageToAllClients(String message) {
+        for (ClientHandler clientHandler : clientHandlers) {
+            try {
+                clientHandler.dout.writeUTF(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -54,29 +87,6 @@ public class MultiClientServer extends JPanel {
         frame.getContentPane().add(tabbedPane);
         frame.setSize(400, 300);
         frame.setVisible(true);
-
-        try {
-            ServerSocket ss = new ServerSocket(1201);
-            while (true) {
-                Socket s = ss.accept();
-                ClientHandler clientHandler = new ClientHandler(s);
-                clientHandlers.add(clientHandler);
-                Thread t = new Thread(clientHandler);
-                t.start();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void sendMessageToAllClients(String message) {
-        for (ClientHandler clientHandler : clientHandlers) {
-            try {
-                clientHandler.dout.writeUTF(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 }
 

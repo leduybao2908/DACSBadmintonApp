@@ -1,10 +1,12 @@
 package view;
+
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import javax.swing.*;
 
 public class ClientFrame extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -16,8 +18,8 @@ public class ClientFrame extends JPanel {
     private static final String PREFIX_SERVER = "Server: ";
     private static final String PREFIX_CLIENT = "Client: ";
     private boolean isServer; // Đánh dấu vai trò của client
-
-    public ClientFrame(boolean isServer) {
+   
+    public ClientFrame(boolean isServer,String name) {
         this.isServer = isServer;
         setLayout(new BorderLayout());
 
@@ -29,7 +31,7 @@ public class ClientFrame extends JPanel {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         msgTxt = new JTextField();
         bottomPanel.add(msgTxt, BorderLayout.CENTER);
-        
+
         JButton btnSend = new JButton("Send");
         btnSend.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -39,7 +41,7 @@ public class ClientFrame extends JPanel {
                         // Nếu là server, thêm tiền tố "Server: "
                         dout.writeUTF(PREFIX_SERVER + msgout);
                     } else {
-                        dout.writeUTF(PREFIX_CLIENT + msgout);
+                        dout.writeUTF(name+": " + msgout);
                     }
                 } catch (Exception e2) {
                     e2.printStackTrace();
@@ -49,30 +51,26 @@ public class ClientFrame extends JPanel {
         bottomPanel.add(btnSend, BorderLayout.EAST);
 
         add(bottomPanel, BorderLayout.SOUTH);
+
+        // Tự động kết nối với server socket khi tạo ClientFrame
+        connectToServer();
     }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("Client");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("Chat", new ClientFrame(false)); // Đánh dấu client là false
-        
-        frame.getContentPane().add(tabbedPane);
-        frame.setSize(400, 300);
-        frame.setVisible(true);
-
-        try {
-            s = new Socket("127.0.0.1", 1201);
-            din = new DataInputStream(s.getInputStream());
-            dout = new DataOutputStream(s.getOutputStream());
-            String msgin = "";
-			while(!msgin.equals("exit")) {
-                msgin = din.readUTF();
-                msgArea.append(msgin + "\n"); // Không cần kiểm tra là server hay client
+    public void connectToServer() {
+        Thread clientThread = new Thread(() -> {
+            try {
+                s = new Socket("127.0.0.1", 1201);
+                din = new DataInputStream(s.getInputStream());
+                dout = new DataOutputStream(s.getOutputStream());
+                String msgin = "";
+                while (!msgin.equals("exit")) {
+                    msgin = din.readUTF();
+                    msgArea.append(msgin + "\n"); // Không cần kiểm tra là server hay client
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
+        clientThread.start();
     }
 }
