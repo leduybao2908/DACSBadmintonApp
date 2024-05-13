@@ -1,11 +1,10 @@
 package view;
 
-import java.awt.EventQueue; 
+import java.awt.EventQueue;  
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-//import dao.ItemDAO;
+import dao.itemDAO;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -78,10 +77,8 @@ public class LoginScreen extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String enterUsername = textUsername.getText();
 				String enterPassword = textFieldPassword.getText();
-				
-			              
-			/*	
-				  if ( ItemDAO.getInstanItemDAO().checkLogin(enteredUsername, enteredPassword))
+								
+				  if ( itemDAO.getInstanitemDAO().checkLogin(enterUsername, enterPassword))
 				  {          
 				   if (rdbtnCashier.isSelected()) {
 				 OpenCashierScreen();
@@ -92,10 +89,9 @@ public class LoginScreen extends JFrame {
 				                     JOptionPane.showMessageDialog(contentPane, "Incorrect username, password or ability!",
 				                             "Login Failed", JOptionPane.ERROR_MESSAGE);
 				                 }				
-				 			}
-		*/
 			}
         });
+
 		
 		btnRegist = new JButton("REGISTER");
 		btnRegist.setFont(new Font("Tahoma", Font.PLAIN, 18));
