@@ -1,15 +1,16 @@
 package model;
 
-import java.util.Date; 
+import java.util.Date;  
 import java.sql.*;
+import java.time.LocalDateTime;
 
 public class billModel {
 private int idbill;
-private Date saledate;
-private int totalcount;
+private String saledate;
+private float totalcount;
 private String customername;
 private String customerphone;
-public billModel(int idbill, Date saledate, int totalcount, String customername, String customerphone) {
+public billModel(int idbill, String saledate, float totalcount, String customername, String customerphone) {
 	super();
 	this.idbill = idbill;
 	this.saledate = saledate;
@@ -27,16 +28,16 @@ public int getIdbill() {
 public void setIdbill(int idbill) {
 	this.idbill = idbill;
 }
-public Date getSaledate() {
+public String getSaledate() {
 	return saledate;
 }
-public void setSaledate(Date saledate) {
+public void setSaledate(String saledate) {
 	this.saledate = saledate;
 }
-public int getTotalcount() {
+public float getTotalcount() {
 	return totalcount;
 }
-public void setTotalcount(int totalcount) {
+public void setTotalcount(float totalcount) {
 	this.totalcount = totalcount;
 }
 public String getCustomername() {
