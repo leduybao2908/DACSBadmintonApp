@@ -12,7 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-import dao.itemDAO;
+import dao.AdminItemDAO;
 import model.ItemModelSell;
 import model.employeeModel;
 import model.productModel;
@@ -39,6 +39,7 @@ import java.util.prefs.Preferences;
 import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
+import javax.swing.JComboBox;
 
 public class AdminScreen extends JFrame {
 
@@ -56,7 +57,7 @@ public class AdminScreen extends JFrame {
 	public JTextField textFieldCostInput;
 	public DefaultTableModel tableModel;
 	public DefaultTableModel tableModelTotalManage;
-	public itemDAO itemDAO = new itemDAO() ; 
+	public AdminItemDAO AdminItemDAO = new AdminItemDAO() ; 
 //	ArrayList<productModel> result = new ArrayList<productModel>();
 	public JTextField textFieldIDItemSell;
 	public JTextField textFieldNameItemSell;
@@ -78,6 +79,9 @@ public class AdminScreen extends JFrame {
 	private JTextField TextEmployeeWorkHour;
 	private JTextField textFieldSearchEmployee;
 	private JTextField textFieldFindManageProduct;
+	private JTextField textFieldIDCATE;
+	private JTextField textFieldID;
+	private JTextField textFieldPassEmployee;
 	
 	public AdminScreen() {
 	        // ...
@@ -106,16 +110,7 @@ public class AdminScreen extends JFrame {
 		tabbedPane.addTab("SELL", null, panelSale, null);
 		panelSale.setLayout(null);
 		
-		JLabel LabelTotalSalesList = new JLabel("LIST OF ITEMS");
-		LabelTotalSalesList.setBounds(405, 79, 205, 27);
-		LabelTotalSalesList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		panelSale.add(LabelTotalSalesList);
-				
-		TextTotalCart = new JTextField();
-		TextTotalCart.setBounds(224, 623, 237, 40);
-		TextTotalCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panelSale.add(TextTotalCart);
-		TextTotalCart.setColumns(10);		
+		// TẠO BẢNG VÀ THAO TÁC VỚI B
 		
 		tableModel = new DefaultTableModel(new Object[][]{}, new String[]{"ProductID", "Name", "Price", "StockQuantity", "CategoryId"});
 		TableTotalSalesList = new JTable(tableModel);
@@ -206,9 +201,9 @@ public class AdminScreen extends JFrame {
                textFieldCountSellWarehouse.setText(String.valueOf(newCount));
                int countsellnew = Integer.parseInt(textFieldCountSellWarehouse.getText());
                 ItemModelSell item = new ItemModelSell(iditemsell, nameitemsell,costinputsell, countsell,idcategory);
-                itemDAO.getInstanitemDAO().inserttablesell(item);
+                AdminItemDAO.getInstanitemDAO().inserttablesell(item);
                 productModel itemud = new productModel(iditemsell, nameitemsell, costinputsell, countsellnew, idcategory);
-                itemDAO.getInstanitemDAO().update(itemud);  
+                AdminItemDAO.getInstanitemDAO().update(itemud);  
                     // Cập nhật bảng ngay tại đây
                 DefaultTableModel model = (DefaultTableModel) TableTotalSalesList.getModel();
                 int selectedRow = TableTotalSalesList.getSelectedRow();
@@ -238,6 +233,12 @@ public class AdminScreen extends JFrame {
 
 		ButtonBuy.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		panelSale.add(ButtonBuy);
+		
+		TextTotalCart = new JTextField();
+		TextTotalCart.setBounds(224, 623, 237, 40);
+		TextTotalCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		panelSale.add(TextTotalCart);
+		TextTotalCart.setColumns(10);	
 		
 		textFieldIDItemSell = new JTextField();
 		textFieldIDItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -322,7 +323,7 @@ public class AdminScreen extends JFrame {
                         if (Confirm==JOptionPane.YES_OPTION)
                         {    
                         	productModel itemud = new productModel(iditemsell, nameitemsell, costinputsell, countsellnew, idcategory);
-                        	itemDAO.getInstanitemDAO().update(itemud); 
+                        	AdminItemDAO.getInstanitemDAO().update(itemud); 
                         // Cập nhật bảng ngay tại đây
                     DefaultTableModel model = (DefaultTableModel) TableTotalSalesList.getModel();
                     int selectedRow = TableTotalSalesList.getSelectedRow();
@@ -335,7 +336,7 @@ public class AdminScreen extends JFrame {
 
                     }                        
                     int itemid =Integer.valueOf(String.valueOf( TableSalesList.getValueAt(row,0)));                
-                    itemDAO.getInstanitemDAO().deletesalecart(itemid); 
+                    AdminItemDAO.getInstanitemDAO().deletesalecart(itemid); 
                     tableModelSale.removeRow(row);                     
           }
                   }	                 
@@ -350,7 +351,7 @@ public class AdminScreen extends JFrame {
 		
 		textFieldSearchSell = new JTextField();
 		textFieldSearchSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldSearchSell.setBounds(209, 27, 346, 40);
+		textFieldSearchSell.setBounds(117, 27, 346, 40);
 		panelSale.add(textFieldSearchSell);
 		textFieldSearchSell.setColumns(10);
 		
@@ -363,7 +364,7 @@ public class AdminScreen extends JFrame {
 		});
 
 		btnSearchSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnSearchSell.setBounds(631, 26, 135, 43);
+		btnSearchSell.setBounds(536, 26, 135, 43);
 		panelSale.add(btnSearchSell);
 		
 		JLabel lblNewLabel = new JLabel("CATE ID");
@@ -377,6 +378,50 @@ public class AdminScreen extends JFrame {
 		textFieldCateID.setBounds(367, 339, 76, 38);
 		panelSale.add(textFieldCateID);
 		
+		JComboBox comboBoxSell = new JComboBox();
+		comboBoxSell.setFont(new Font("Arial", Font.PLAIN, 16));
+		comboBoxSell.setBounds(739, 24, 144, 43);
+		panelSale.add(comboBoxSell);
+		comboBoxSell.addItem("");
+		comboBoxSell.addItem("Vợt");
+		comboBoxSell.addItem("Giày");
+		comboBoxSell.addItem("Trang phục");
+		comboBoxSell.addItem("Vật phẩm khác");
+		Font fontSell = new Font("Arial", Font.PLAIN, 16);
+		comboBoxSell.setFont(fontSell);
+		comboBoxSell.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Xử lý hành động tương ứng với mỗi lựa chọn
+                String selectedOption = (String) comboBoxSell.getSelectedItem();
+                switch (selectedOption) {
+                    case "Vợt":
+                        // Xử lý khi "Vợt" được chọn
+
+                    	SelectComboBoxSellTable(1);
+				    break;
+                    case "Giày":
+                        // Xử lý khi "Giày" được chọn
+                   // 	String giay = "2";
+                    	SelectComboBoxSellTable(2);
+                    	break;
+                    case "Trang phục":
+                        // Xử lý khi "Trang phục" được chọn
+                      //       	String trangphuc = "3";
+
+                    	SelectComboBoxSellTable(3);          
+                    	break;
+                    case "Vật phẩm khác":
+                        // Xử lý khi "Vật phẩm khác" được chọn
+                    	//String khac = "4";
+
+                    	SelectComboBoxSellTable(4);   
+                    	break;
+                    default:
+                        break;
+                }
+            }
+        });
+		
 	/*	String username = LoginScreenn.getUsername();
 		JLabel lblNewLabel = new JLabel(username);
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -385,18 +430,18 @@ public class AdminScreen extends JFrame {
 		
 		ButtonBuy.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	               	
+	            /*   	
 	            	 int count =Integer.parseInt( textFieldCountNeedBuy.getText());   
 		             float currentTotal = Float.parseFloat(TextT0talManage.getText());
 		             float costinput =Float.parseFloat( textFieldCostSell.getText());
 		             float newTotal = currentTotal + costinput*count;		      
-		  //             updateTextTongTienManage(newTotal);
+		               updateTextTongTienManage(newTotal);
 	            	  int iditemsell = Integer.parseInt(textFieldIDItemSell.getText());
 	                  String nameitemsell = textFieldNameItemSell.getText(); 
 	                  float costinputsell =Float.parseFloat( textFieldCostSell.getText());
 	                  int countsell = Integer.parseInt(textFieldCountSellWarehouse.getText());
-		                
-	   //         	openNewScreen();
+		                */
+	            	openpaymentscreenn();
 	            }
 	        });
 
@@ -422,16 +467,17 @@ public class AdminScreen extends JFrame {
 	            public void actionPerformed(ActionEvent e) {
 	            	int iditem = Integer.parseInt(textFieldIDItem.getText());
 	                String nameitem= textFieldNameItem.getText();
-	                currentCount = Integer.parseInt(textFieldNewCount.getText());	               																							
-	                float costinput =Float.parseFloat( textFieldCostInput.getText());	               
-	           /*     productModel item = new productModel(iditem, nameitem, currentCount, costinput);
-	                ItemDAO.getInstanItemDAO().insert(item);	       */                 
+	                int currentCount = Integer.parseInt(textFieldNewCount.getText());	               																							
+	                float costinput =Float.parseFloat( textFieldCostInput.getText());	
+	            	int idCATE = Integer.parseInt(textFieldIDCATE.getText());
+	                productModel item = new productModel(iditem, nameitem, costinput,currentCount,idCATE );
+	                AdminItemDAO.getInstanitemDAO().insert(item);	                        
 	               float currentTotal = Float.parseFloat(TextT0talManage.getText());
 	               float newTotal = currentTotal - costinput*currentCount;
 	//               updateTextTongTienManage(newTotal);
 
-	//               TableDachSachTongManage();
-	 //              clearFields();
+	               TableDachSachTongManage();
+	               clearFields();
 	            }
 	        });
 		panelManageProduct.add(ButtonAddManage);
@@ -455,7 +501,7 @@ public class AdminScreen extends JFrame {
 		TableTotalManagementList.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		           
 		JScrollPane scrollPaneTotalManagementList = new JScrollPane(TableTotalManagementList);
-		scrollPaneTotalManagementList.setBounds(10, 117, 995, 231);
+		scrollPaneTotalManagementList.setBounds(10, 117, 995, 200);
 		panelManageProduct.add(scrollPaneTotalManagementList);		
 		TableDachSachTongManage();
 		
@@ -482,7 +528,7 @@ public class AdminScreen extends JFrame {
 		textFieldIDItem = new JTextField();
 		textFieldIDItem.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldIDItem.setColumns(10);
-		textFieldIDItem.setBounds(186, 375, 221, 38);
+		textFieldIDItem.setBounds(172, 378, 80, 38);
 		panelManageProduct.add(textFieldIDItem);
 		
 		textFieldNameItem = new JTextField();
@@ -519,6 +565,7 @@ public class AdminScreen extends JFrame {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	            	int iditem = Integer.parseInt(textFieldIDItem.getText());
+	            	int idcate = Integer.parseInt(textFieldIDCATE.getText());
 	                String nameitem= textFieldNameItem.getText();
 	                int count =Integer.parseInt( textFieldNewCount.getText());
 	                float costinput =Float.parseFloat( textFieldCostInput.getText());
@@ -528,16 +575,16 @@ public class AdminScreen extends JFrame {
 	                float newtotal = currentTotal - total;
 	//                updateTextTongTienManage(newtotal); 
 
-	     /*           productModel itemud = new productModel(iditem, nameitem, count, costinput);
-	                ItemDAO.getInstanItemDAO().update(itemud);  */
+	                productModel itemud = new productModel(iditem, nameitem, costinput,count, idcate);
+	                AdminItemDAO.getInstanitemDAO().update(itemud);  
 	                    // Cập nhật bảng ngay tại đây
 	                DefaultTableModel model = (DefaultTableModel) TableTotalManagementList.getModel();
 	                int selectedRow = TableTotalManagementList.getSelectedRow();
 	                if (selectedRow != -1) {
 	                    model.setValueAt(iditem, selectedRow, 0);
 	                    model.setValueAt(nameitem, selectedRow, 1);
-	                    model.setValueAt(count, selectedRow, 2);
-	                    model.setValueAt(costinput, selectedRow, 3);
+	                    model.setValueAt(count, selectedRow, 3);
+	                    model.setValueAt(costinput, selectedRow, 2);
 	                }
               
 	            }
@@ -577,14 +624,76 @@ public class AdminScreen extends JFrame {
 		panelManageProduct.add(btnLogout);
 		
 		textFieldFindManageProduct = new JTextField();
-		textFieldFindManageProduct.setBounds(255, 10, 336, 43);
+		textFieldFindManageProduct.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldFindManageProduct.setBounds(136, 10, 336, 43);
 		panelManageProduct.add(textFieldFindManageProduct);
 		textFieldFindManageProduct.setColumns(10);
 		
 		JButton btnFindMangeProduct = new JButton("Search");
+		btnFindMangeProduct.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 String searchTerm = textFieldFindManageProduct.getText();
+				 searchMangeByName(searchTerm);
+			}
+		});
 		btnFindMangeProduct.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnFindMangeProduct.setBounds(647, 10, 135, 43);
+		btnFindMangeProduct.setBounds(536, 10, 135, 43);
 		panelManageProduct.add(btnFindMangeProduct);
+		
+		JLabel lblIdCate = new JLabel("ID CATE");
+		lblIdCate.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblIdCate.setBounds(269, 375, 72, 44);
+		panelManageProduct.add(lblIdCate);
+		
+		textFieldIDCATE = new JTextField();
+		textFieldIDCATE.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldIDCATE.setColumns(10);
+		textFieldIDCATE.setBounds(351, 378, 80, 38);
+		panelManageProduct.add(textFieldIDCATE);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(822, 12, 144, 43);
+		panelManageProduct.add(comboBox);
+		comboBox.addItem("");
+		comboBox.addItem("Vợt");
+		comboBox.addItem("Giày");
+		comboBox.addItem("Trang phục");
+		comboBox.addItem("Vật phẩm khác");
+		Font font = new Font("Arial", Font.PLAIN, 16);
+		comboBox.setFont(font);
+		comboBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Xử lý hành động tương ứng với mỗi lựa chọn
+                String selectedOption = (String) comboBox.getSelectedItem();
+                switch (selectedOption) {
+                    case "Vợt":
+                        // Xử lý khi "Vợt" được chọn
+
+                    	SelectComboBoxTable(1);
+				    break;
+                    case "Giày":
+                        // Xử lý khi "Giày" được chọn
+                   // 	String giay = "2";
+                    	SelectComboBoxTable(2);
+                    	break;
+                    case "Trang phục":
+                        // Xử lý khi "Trang phục" được chọn
+                      //       	String trangphuc = "3";
+
+                    	SelectComboBoxTable(3);          
+                    	break;
+                    case "Vật phẩm khác":
+                        // Xử lý khi "Vật phẩm khác" được chọn
+                    	//String khac = "4";
+
+                    	SelectComboBoxTable(4);   
+                    	break;
+                    default:
+                        break;
+                }
+            }
+        });
+		
 		TableTotalManagementList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 	        public void valueChanged(ListSelectionEvent e) {
@@ -595,14 +704,16 @@ public class AdminScreen extends JFrame {
 	                // Get data from the selected row
 	                Object iditem = TableTotalManagementList.getValueAt(selectedRow, 0);
 	                Object nameitem = TableTotalManagementList.getValueAt(selectedRow, 1);
-	                Object  count = TableTotalManagementList.getValueAt(selectedRow, 2);
-	                Object costinput = TableTotalManagementList.getValueAt(selectedRow, 3);
+	                Object costinput = TableTotalManagementList.getValueAt(selectedRow, 2);
+	                Object  count = TableTotalManagementList.getValueAt(selectedRow, 3);
+	                Object  idcate = TableTotalManagementList.getValueAt(selectedRow, 4);
 
 	                // Display data in TextFields
 	                textFieldIDItem.setText(iditem.toString());
 	                textFieldNameItem.setText(nameitem.toString());
 	                textFieldOldCount.setText(count.toString());
 	                textFieldCostInput.setText(costinput.toString());
+	                textFieldIDCATE.setText(idcate.toString());
 	                
 	            }
 	        }
@@ -619,15 +730,15 @@ public class AdminScreen extends JFrame {
 	                  else
 	                  {
 	                        int Confirm = JOptionPane.showConfirmDialog(AdminScreen.this, "Are you sure ?");
-	                        if (Confirm==JOptionPane.YES_OPTION)
+	                        if (Confirm== JOptionPane.YES_OPTION)
 	                        {                            
                         int itemid =Integer.valueOf(String.valueOf( TableTotalManagementList.getValueAt(row,0)));
                         int count =Integer.parseInt( textFieldOldCount.getText());
     	                float costinput =Float.parseFloat( textFieldCostInput.getText());
-                //        ItemDAO.getInstanItemDAO().delete(itemid);
+                        AdminItemDAO.getInstanitemDAO().deleteTotalTableProduct(itemid);
                         tableModelTotalManage.removeRow(row);   
                         float currentTotal = Float.parseFloat(TextT0talManage.getText());
- 		               float newTotal = currentTotal + costinput*count;
+ 		                float newTotal = currentTotal + costinput*count;
  	//	               updateTextTongTienManage(newTotal);
               }
 	                  }	
@@ -643,6 +754,7 @@ public class AdminScreen extends JFrame {
 		tableModelEmployeeManage = new DefaultTableModel(new Object[][]{}, new String[]{"ID EMPLOYEE", "NAME", "GMAIL", "PASSWORD", "PHONENUMBER", "WORKHOUR"});
 		TableEmployeeList = new JTable(tableModelEmployeeManage);
 		TableEmployeeList.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		
 		TableEmployeeList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 	        public void valueChanged(ListSelectionEvent e) {
@@ -655,8 +767,14 @@ public class AdminScreen extends JFrame {
 	                Object EmployeeName = TableEmployeeList.getValueAt(selectedRow, 1);
 	                Object EmployeeGmail = TableEmployeeList.getValueAt(selectedRow, 2);
 	                Object EmployeePass = TableEmployeeList.getValueAt(selectedRow, 3);
-	                Object EmployeePhoneNumber = TableEmployeeList.getValueAt(selectedRow, 5);
-	                Object EmployeeWorkHour = TableEmployeeList.getValueAt(selectedRow, 6);
+	                Object EmployeePhoneNumber = TableEmployeeList.getValueAt(selectedRow, 4);
+	                Object EmployeeWorkHour = TableEmployeeList.getValueAt(selectedRow, 5);
+	                
+	                textFieldID.setText(EmployeeID.toString());
+	                TextEmployeeName.setText(EmployeeName.toString());
+	                TextEmployeePhone.setText(EmployeeGmail.toString());
+	                TextEmployeeGmail.setText(EmployeePhoneNumber.toString());
+	                TextEmployeeWorkHour.setText(EmployeeWorkHour.toString());
 
 	            }
 	        }
@@ -669,53 +787,67 @@ public class AdminScreen extends JFrame {
 		
 		JLabel LabelEmployeeName = new JLabel("NAME");
 		LabelEmployeeName.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		LabelEmployeeName.setBounds(98, 387, 118, 44);
+		LabelEmployeeName.setBounds(94, 395, 118, 44);
 		panelManageCashier.add(LabelEmployeeName);
 		
 		JLabel LabelEmployeePhoneNum = new JLabel("PHONENUMBER");
 		LabelEmployeePhoneNum.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		LabelEmployeePhoneNum.setBounds(94, 441, 122, 44);
+		LabelEmployeePhoneNum.setBounds(94, 443, 122, 44);
 		panelManageCashier.add(LabelEmployeePhoneNum);
 		
 		JLabel LabelEmployeGmail = new JLabel("GMAIL");
 		LabelEmployeGmail.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		LabelEmployeGmail.setBounds(98, 495, 122, 44);
+		LabelEmployeGmail.setBounds(94, 491, 122, 44);
 		panelManageCashier.add(LabelEmployeGmail);
 		
 		JLabel LabelEmployeeNameWORKHOUR = new JLabel("WORKHOUR");
 		LabelEmployeeNameWORKHOUR.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		LabelEmployeeNameWORKHOUR.setBounds(98, 549, 122, 44);
+		LabelEmployeeNameWORKHOUR.setBounds(90, 539, 122, 44);
 		panelManageCashier.add(LabelEmployeeNameWORKHOUR);
 		
 		TextEmployeeName = new JTextField();
 		TextEmployeeName.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TextEmployeeName.setColumns(10);
-		TextEmployeeName.setBounds(253, 390, 221, 38);
+		TextEmployeeName.setBounds(253, 398, 221, 38);
 		panelManageCashier.add(TextEmployeeName);
 		
 		TextEmployeePhone = new JTextField();
 		TextEmployeePhone.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TextEmployeePhone.setColumns(10);
-		TextEmployeePhone.setBounds(253, 444, 221, 38);
+		TextEmployeePhone.setBounds(253, 446, 221, 38);
 		panelManageCashier.add(TextEmployeePhone);
 		
 		TextEmployeeGmail = new JTextField();
 		TextEmployeeGmail.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TextEmployeeGmail.setColumns(10);
-		TextEmployeeGmail.setBounds(253, 498, 221, 38);
+		TextEmployeeGmail.setBounds(253, 494, 221, 38);
 		panelManageCashier.add(TextEmployeeGmail);
 		
 		TextEmployeeWorkHour = new JTextField();
 		TextEmployeeWorkHour.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TextEmployeeWorkHour.setColumns(10);
-		TextEmployeeWorkHour.setBounds(253, 552, 221, 38);
+		TextEmployeeWorkHour.setBounds(253, 542, 221, 38);
 		panelManageCashier.add(TextEmployeeWorkHour);
 		
 		JButton btnDeleteEmployee = new JButton("DELETE EMPLOYEE");
 		btnDeleteEmployee.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
-				
+				int row = TableEmployeeList.getSelectedRow();
+                if(row ==-1)
+                {
+                  JOptionPane.showMessageDialog(AdminScreen.this, "Please select row you want to delete!","Loi",JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                      int Confirm = JOptionPane.showConfirmDialog(AdminScreen.this, "Are you sure ?");
+                      if (Confirm== JOptionPane.YES_OPTION)
+                      {                            
+                  int employeeid =Integer.valueOf(String.valueOf( TableEmployeeList.getValueAt(row,0)));
+                  AdminItemDAO.getInstanitemDAO().deleteEmployee(employeeid);
+                  tableModelEmployeeManage.removeRow(row);   
+        }
+                  }
 			}
 		     	});
 		btnDeleteEmployee.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -726,9 +858,30 @@ public class AdminScreen extends JFrame {
 		btnUpdateInformation.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
-				
+				int employeeid = Integer.parseInt(textFieldID.getText());
+                String employeename= TextEmployeeName.getText();
+            	String employeephone = TextEmployeePhone.getText();
+            	String employeegmail = TextEmployeeGmail.getText();
+            	String employeepass = textFieldPassEmployee.getText();
+            	float employeeWH = Float.parseFloat(TextEmployeeWorkHour.getText());
+
+            	employeeModel itemud = new employeeModel(employeeid, employeename, employeegmail,employeepass,employeephone, employeeWH);
+                AdminItemDAO.getInstanitemDAO().updateemployee(itemud);  
+                    // Cập nhật bảng ngay tại đây
+                DefaultTableModel model = (DefaultTableModel) TableEmployeeList.getModel();
+                int selectedRow = TableEmployeeList.getSelectedRow();
+                if (selectedRow != -1) {
+                    model.setValueAt(employeeid, selectedRow, 0);
+                    model.setValueAt(employeename, selectedRow, 1);
+                    model.setValueAt(employeepass, selectedRow, 3);
+                    model.setValueAt(employeegmail, selectedRow, 2);
+                    model.setValueAt(employeephone, selectedRow, 4);
+                    model.setValueAt(employeeWH, selectedRow, 5);
+
+                }
 			}
 		     	});
+		
 		btnUpdateInformation.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnUpdateInformation.setBounds(610, 466, 301, 50);
 		panelManageCashier.add(btnUpdateInformation);
@@ -737,7 +890,8 @@ public class AdminScreen extends JFrame {
 		btnSearchEmployee.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
-				
+				 String searchTerm = textFieldSearchEmployee.getText();
+			        searchByNameEmployee(searchTerm);
 			}
 		     	});
 		btnSearchEmployee.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -767,12 +921,35 @@ public class AdminScreen extends JFrame {
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
 		lblNewLabel_1.setBounds(371, 68, 227, 36);
 		panelManageCashier.add(lblNewLabel_1);
+		
+		textFieldID = new JTextField();
+		textFieldID.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldID.setColumns(10);
+		textFieldID.setBounds(253, 347, 221, 38);
+		panelManageCashier.add(textFieldID);
+		
+		JLabel lblId = new JLabel("ID ");
+		lblId.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblId.setBounds(94, 347, 118, 44);
+		panelManageCashier.add(lblId);
+		
+		textFieldPassEmployee = new JTextField();
+		textFieldPassEmployee.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldPassEmployee.setColumns(10);
+		textFieldPassEmployee.setBounds(253, 590, 221, 38);
+		panelManageCashier.add(textFieldPassEmployee);
+		
+		JLabel lblPassword = new JLabel("PASSWORD");
+		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblPassword.setBounds(90, 584, 122, 44);
+		panelManageCashier.add(lblPassword);
 		TableEmployeeList();
 	}
 	
+	// HÀM CHỨC NĂNG
 	public void TableDachSachTongSell() {
 		   tableModel = (DefaultTableModel) TableTotalSalesList.getModel();
-		    ArrayList<productModel> itemDAO = new itemDAO().getInstanitemDAO().selectAll() ;
+		    ArrayList<productModel> itemDAO = new AdminItemDAO().getInstanitemDAO().selectAll() ;
 		    tableModel.getDataVector().removeAllElements();
 		    tableModel.setRowCount(0); // Clear existing data
 		    for(int i = 0; i < itemDAO.size();i++) {
@@ -783,7 +960,7 @@ public class AdminScreen extends JFrame {
 	
 	public void TableEmployeeList() {
 		tableModelEmployeeManage = (DefaultTableModel) TableEmployeeList.getModel();
-		    ArrayList<employeeModel> itemDAO = new itemDAO().getInstanitemDAO().selectAllEmployee() ;
+		    ArrayList<employeeModel> itemDAO = new AdminItemDAO().getInstanitemDAO().selectAllEmployee() ;
 		    tableModelEmployeeManage.getDataVector().removeAllElements();
 		    tableModelEmployeeManage.setRowCount(0); // Clear existing data
 		    for(int i = 0; i < itemDAO.size();i++) {
@@ -794,7 +971,7 @@ public class AdminScreen extends JFrame {
 	
 	public void TableDachSachTongManage() {
 		   tableModelTotalManage = (DefaultTableModel) TableTotalManagementList.getModel();
-		    ArrayList<productModel> itemDAO = new itemDAO().getInstanitemDAO().selectAll() ;
+		    ArrayList<productModel> itemDAO = new AdminItemDAO().getInstanitemDAO().selectAll() ;
 		    tableModelTotalManage.getDataVector().removeAllElements();
 		    tableModelTotalManage.setRowCount(0); // Clear existing data
 		    for(int i = 0; i < itemDAO.size();i++) {
@@ -805,16 +982,39 @@ public class AdminScreen extends JFrame {
 	public void SaleTable() {
 		
 		tableModelSale = (DefaultTableModel) TableSalesList.getModel();
-	    ArrayList<ItemModelSell> items = new itemDAO().getInstanitemDAO().selectProductCart();
+	    ArrayList<ItemModelSell> items = new AdminItemDAO().getInstanitemDAO().selectProductCart();
 	    tableModelSale.getDataVector().removeAllElements();
 	    tableModelSale.setRowCount(0); // Clear existing data
 	    for (int i = 0; i < items.size(); i++) {
 	    	tableModelSale.addRow(items.get(i).toObject());
 	    }
 	}	
+	
+public void SelectComboBoxTable(int CateID) {
+		
+	tableModelTotalManage = (DefaultTableModel) TableTotalManagementList.getModel();
+	    ArrayList<productModel> items = new AdminItemDAO().getInstanitemDAO().selectCategory(CateID);
+	    tableModelTotalManage.getDataVector().removeAllElements();
+	    tableModelTotalManage.setRowCount(0); // Clear existing data
+	    for (productModel result : items) {
+	    	tableModelTotalManage.addRow(result.toObject());
+	    }
+	}	
+
+public void SelectComboBoxSellTable(int CateID) {
+	
+	tableModel = (DefaultTableModel) TableTotalSalesList.getModel();
+	    ArrayList<productModel> items = new AdminItemDAO().getInstanitemDAO().selectCategory(CateID);
+	    tableModel.getDataVector().removeAllElements();
+	    tableModel.setRowCount(0); // Clear existing data
+	    for (productModel result : items) {
+	    	tableModel.addRow(result.toObject());
+	    }
+	}
+
 
 	private void searchByName(String searchTerm) {
-	    ArrayList<productModel> searchResults = itemDAO.getInstanitemDAO().searchByName(searchTerm);
+	    ArrayList<productModel> searchResults = AdminItemDAO.getInstanitemDAO().searchByName(searchTerm);
 	    tableModel.getDataVector().removeAllElements();
 	    tableModel.setRowCount(0);
 
@@ -822,17 +1022,38 @@ public class AdminScreen extends JFrame {
 	        tableModel.addRow(result.toObject());
 	    }
 	}
+	
+	private void searchMangeByName(String searchTerm) {
+	    ArrayList<productModel> searchResults = AdminItemDAO.getInstanitemDAO().searchByName(searchTerm);
+	    tableModelTotalManage.getDataVector().removeAllElements();
+	    tableModelTotalManage.setRowCount(0);
+
+	    for (productModel result : searchResults) {
+	    	tableModelTotalManage.addRow(result.toObject());
+	    }
+	}
+	
+	private void searchByNameEmployee(String searchTerm) {
+	    ArrayList<employeeModel> searchResults = AdminItemDAO.getInstanitemDAO().searchByNameEmployee(searchTerm);
+	    tableModelEmployeeManage.getDataVector().removeAllElements();
+	    tableModelEmployeeManage.setRowCount(0);
+
+	    for (employeeModel result : searchResults) {
+	    	tableModelEmployeeManage.addRow(result.toObject());
+	    }
+	}
+	
 	public void refreshTable() {
 	    TableDachSachTongSell();		    
 	    TableDachSachTongManage();
 	}
 	
 	
-/*	public void openNewScreen() {
+	public void openpaymentscreenn() {
 		 
-        ChangeScreen NewScreen = new ChangeScreen();    
-        NewScreen.setVisible(true);
-        dispose();
+		Paymentscreen paymentscreen = new Paymentscreen();    
+		paymentscreen.setVisible(true);
+		paymentscreen.setLocationRelativeTo(null);
     }
 		
 	public void updateTextTongTienManage(float newTotal) {
@@ -844,12 +1065,13 @@ public class AdminScreen extends JFrame {
 		
 	public float getTotalCost() {
         return totalCost;
-    } */
+    } 
 	
 	public void refreshbutton() {
 		
 		AdminScreen NewScreen = new AdminScreen();		   
 	    NewScreen.setVisible(true);
+		  NewScreen.setLocationRelativeTo(null); 
 	dispose();
 	}
 	
