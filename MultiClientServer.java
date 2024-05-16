@@ -32,7 +32,8 @@ public class MultiClientServer extends JPanel {
         msgTxt = new JTextField();
         bottomPanel.add(msgTxt, BorderLayout.CENTER);
 
-        JButton btnSend = new JButton("Send");
+        JButton btnSend = new view.Style.ButtonGradient();
+        btnSend.setText("Send");
         btnSend.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String msgout = msgTxt.getText().trim();

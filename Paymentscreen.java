@@ -16,6 +16,7 @@ import database.JDBCUtil;
 import model.ItemModelSell;
 import model.billModel;
 import model.productModel;
+import view.Style.RoundJTextField;
 import model.billitemModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -69,6 +70,12 @@ public class Paymentscreen extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+
+		lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(Paymentscreen.class.getResource("bg.jpg")));
+		lblNewLabel.setBounds(10, 10, 1100,750);
+		contentPane.add(lblNewLabel);
+
 		tableModelBill = new DefaultTableModel(new Object[][]{}, new String[]{"ID PRODUCT", "NAME PRODUCT", "PRICE", "QUANTITY", "IDCATEGORY"});
 		TableBillList = new JTable(tableModelBill);
 		TableBillList.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -88,8 +95,8 @@ public class Paymentscreen extends JFrame {
 		LabelMain.setFont(new Font("Tahoma", Font.BOLD, 18));
 		LabelMain.setBounds(110, 39, 557, 40);
 		contentPane.add(LabelMain);
-		
-		JButton ButtonCalculateMoney = new JButton("TÍNH TIỀN");
+		JButton ButtonCalculateMoney = new view.Style.ButtonGradient();
+		ButtonCalculateMoney.setText("Cash");
 		ButtonCalculateMoney.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		ButtonCalculateMoney.setBounds(730, 106, 140, 43);
 		ButtonCalculateMoney.addActionListener(new ActionListener() {
@@ -118,12 +125,12 @@ public class Paymentscreen extends JFrame {
         });
 		contentPane.add(ButtonCalculateMoney);
 		
-		textFieldChange = new JTextField();
+		textFieldChange = new RoundJTextField(60);
 		textFieldChange.setBounds(390, 160, 255, 40);
 		contentPane.add(textFieldChange);
 		textFieldChange.setColumns(10);
 		
-		textFieldCustomerMoney = new JTextField();
+		textFieldCustomerMoney = new RoundJTextField(60);
 		textFieldCustomerMoney.setColumns(10);
 		textFieldCustomerMoney.setBounds(390, 110, 255, 40);
 		contentPane.add(textFieldCustomerMoney);
@@ -138,7 +145,7 @@ public class Paymentscreen extends JFrame {
 		LabelChange.setBounds(158, 157, 94, 40);
 		contentPane.add(LabelChange);
 		
-		txtFieldCustomerName = new JTextField();
+		txtFieldCustomerName = new RoundJTextField(60);
 		txtFieldCustomerName.setColumns(10);
 		txtFieldCustomerName.setBounds(390, 210, 255, 40);
 		contentPane.add(txtFieldCustomerName);
@@ -153,7 +160,7 @@ public class Paymentscreen extends JFrame {
 		lblCustomerPhonenumber.setBounds(158, 260, 209, 40);
 		contentPane.add(lblCustomerPhonenumber);
 		
-		textFieldCustomerPhone = new JTextField();
+		textFieldCustomerPhone = new RoundJTextField(60);
 		textFieldCustomerPhone.setColumns(10);
 		textFieldCustomerPhone.setBounds(390, 260, 255, 40);
 		contentPane.add(textFieldCustomerPhone);

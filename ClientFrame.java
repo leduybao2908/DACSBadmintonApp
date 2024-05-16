@@ -1,6 +1,9 @@
 package view;
 
 import javax.swing.*;
+
+import view.Style.ButtonGradient;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +35,8 @@ public class ClientFrame extends JPanel {
         msgTxt = new JTextField();
         bottomPanel.add(msgTxt, BorderLayout.CENTER);
 
-        JButton btnSend = new JButton("Send");
+        ButtonGradient btnSend = new view.Style.ButtonGradient();
+        btnSend.setText("Send");
         btnSend.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -65,7 +69,7 @@ public class ClientFrame extends JPanel {
                 String msgin = "";
                 while (!msgin.equals("exit")) {
                     msgin = din.readUTF();
-                    msgArea.append(msgin + "\n"); // Không cần kiểm tra là server hay client
+                    msgArea.append(msgin + "\n"); 
                 }
             } catch (Exception e) {
                 e.printStackTrace();

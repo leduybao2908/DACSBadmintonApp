@@ -4,7 +4,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import dao.itemDAO;
+
+import dao.AdminItemDAO;
+import view.Style.TextFields;
+import view.Style.PasswordFields;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -49,9 +52,9 @@ public class LoginScreen extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		textUsername = new JTextField();
+		textUsername = new TextFields();
 		textUsername.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		textUsername.setBounds(174, 172, 242, 41);
+		textUsername.setBounds(174, 172, 242, 55);
 		contentPane.add(textUsername);
 		textUsername.setColumns(10);
 		
@@ -78,10 +81,10 @@ public class LoginScreen extends JFrame {
 				String enterUsername = textUsername.getText();
 				String enterPassword = textFieldPassword.getText();
 								
-				  if ( itemDAO.getInstanitemDAO().checkLogin(enterUsername, enterPassword))
+				  if ( AdminItemDAO.getInstanitemDAO().checkLogin(enterUsername, enterPassword))
 				  {          
 				   if (rdbtnCashier.isSelected()) {
-				 OpenCashierScreen();
+				 OpenCashierScreen(enterUsername);
 	                } else if (rdbtnAdmin.isSelected()) {
 	                	OpenAdminScreen();
 	                }        	
@@ -108,6 +111,7 @@ public class LoginScreen extends JFrame {
 		
 		JLabel LabelUsername = new JLabel("USERNAME");
 		LabelUsername.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		
 		LabelUsername.setBounds(33, 166, 131, 53);
 		contentPane.add(LabelUsername);
 		
@@ -116,8 +120,8 @@ public class LoginScreen extends JFrame {
 		LabelPassword.setBounds(33, 233, 130, 53);
 		contentPane.add(LabelPassword);
 		
-		textFieldPassword = new JPasswordField();
-		textFieldPassword.setBounds(174, 242, 242, 41);
+		textFieldPassword = new PasswordFields();
+		textFieldPassword.setBounds(174, 242, 242, 55);
 		contentPane.add(textFieldPassword);
 		
 	//	lblNewLabel = new JLabel("");
@@ -152,8 +156,8 @@ public class LoginScreen extends JFrame {
 		dispose();
 	}
 	
-	 public void OpenCashierScreen() {
-		 CasherScreen cashscreen = new CasherScreen();
+	 public void OpenCashierScreen(String userName) {
+		 CashierScreen cashscreen = new CashierScreen(userName);
 		 cashscreen.setVisible(true);
 		 dispose();
 	 }

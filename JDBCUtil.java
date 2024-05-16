@@ -1,5 +1,5 @@
 
-package database;
+package view;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;

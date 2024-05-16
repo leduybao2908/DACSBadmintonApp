@@ -16,6 +16,10 @@ import dao.AdminItemDAO;
 import model.ItemModelSell;
 import model.employeeModel;
 import model.productModel;
+import view.Style.BackgroundPanel;
+import view.Style.ButtonGradient;
+import view.Style.RoundJTextField;
+
 import javax.swing.JTabbedPane; 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -105,8 +109,9 @@ public class AdminScreen extends JFrame {
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		tabbedPane.setBounds(40, 0, 1000, 700);
 		contentPane.add(tabbedPane);
-		
-		JPanel panelSale = new JPanel();
+		Image backgroundImage = Toolkit.getDefaultToolkit().createImage(CashierScreen.class.getResource("bg.jpg"));
+        BackgroundPanel panelSale = new BackgroundPanel(backgroundImage);
+
 		tabbedPane.addTab("SELL", null, panelSale, null);
 		panelSale.setLayout(null);
 		
@@ -166,6 +171,8 @@ public class AdminScreen extends JFrame {
 	                textFieldCountSellWarehouse.setText(countofTableTotalSalesList.toString());	
 	                textFieldCountNeedBuy.setText(count.toString());	
 	                textFieldCostSell.setText(costinput.toString());
+					textFieldCateID.setText(categoryId.toString());
+
 	                int countbfupdate = Integer.parseInt(textFieldCountSellWarehouse.getText());
 	                int countadd = Integer.parseInt(textFieldCountNeedBuy.getText());
 	            }
@@ -178,7 +185,8 @@ public class AdminScreen extends JFrame {
 		panelSale.add(scrollPaneTableSalesList);
 		TableDachSachTongSell();
 		
-		JButton ButtonAddToCart = new JButton("ADD TO CART");	
+		JButton ButtonAddToCart = new view.Style.ButtonGradient();
+		ButtonAddToCart.setText("ADD TO CART");	
 		ButtonAddToCart.setBounds(222, 452, 221, 40);
 		ButtonAddToCart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("Cart_icon.png"))));
 		ButtonAddToCart.addActionListener(new ActionListener() {
@@ -226,7 +234,8 @@ public class AdminScreen extends JFrame {
 		LabelTongTienSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		panelSale.add(LabelTongTienSell);
 		
-		JButton ButtonBuy = new JButton("BUY");
+		JButton ButtonBuy = new view.Style.ButtonGradient();
+		ButtonBuy.setText("BUY");
 		ButtonBuy.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonBuy.setBounds(524, 624, 126, 38);
 		ButtonBuy.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("cash-icon.png"))));
@@ -234,31 +243,31 @@ public class AdminScreen extends JFrame {
 		ButtonBuy.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		panelSale.add(ButtonBuy);
 		
-		TextTotalCart = new JTextField();
+		TextTotalCart = new RoundJTextField(60);
 		TextTotalCart.setBounds(224, 623, 237, 40);
 		TextTotalCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		panelSale.add(TextTotalCart);
 		TextTotalCart.setColumns(10);	
 		
-		textFieldIDItemSell = new JTextField();
+		textFieldIDItemSell = new RoundJTextField(60);
 		textFieldIDItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldIDItemSell.setColumns(10);
 		textFieldIDItemSell.setBounds(172, 339, 76, 38);
 		panelSale.add(textFieldIDItemSell);
 		
-		textFieldNameItemSell = new JTextField();
+		textFieldNameItemSell = new RoundJTextField(60);
 		textFieldNameItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldNameItemSell.setColumns(10);
 		textFieldNameItemSell.setBounds(172, 393, 271, 38);
 		panelSale.add(textFieldNameItemSell);
 		
-		textFieldCostSell = new JTextField();
+		textFieldCostSell = new RoundJTextField(60);
 		textFieldCostSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCostSell.setColumns(10);
 		textFieldCostSell.setBounds(698, 339, 221, 38);
 		panelSale.add(textFieldCostSell);
 		
-		textFieldCountNeedBuy = new JTextField();
+		textFieldCountNeedBuy = new RoundJTextField(60);
 		textFieldCountNeedBuy.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCountNeedBuy.setColumns(10);
 		textFieldCountNeedBuy.setBounds(843, 393, 76, 38);
@@ -284,13 +293,14 @@ public class AdminScreen extends JFrame {
 		LabelCountSell.setBounds(555, 387, 95, 44);
 		panelSale.add(LabelCountSell);
 		
-		textFieldCountSellWarehouse = new JTextField();
+		textFieldCountSellWarehouse = new RoundJTextField(60);
 		textFieldCountSellWarehouse.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCountSellWarehouse.setBounds(698, 393, 126, 38);
 		panelSale.add(textFieldCountSellWarehouse);
 		textFieldCountSellWarehouse.setColumns(10);
 		
-		JButton btnNewButton = new JButton("REFRESH");
+		JButton btnNewButton = new view.Style.ButtonGradient();
+		btnNewButton.setText("REFRESH");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			refreshbutton();
@@ -300,7 +310,8 @@ public class AdminScreen extends JFrame {
 		btnNewButton.setBounds(739, 623, 126, 40);
 		panelSale.add(btnNewButton);
 		
-		JButton btnDeleteItemCart = new JButton("REMOVE FROM CART");
+		JButton btnDeleteItemCart = new view.Style.ButtonGradient();
+		btnDeleteItemCart.setText("REMOVE FROM CART");
 		btnDeleteItemCart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -313,6 +324,7 @@ public class AdminScreen extends JFrame {
                 int idcategory = Integer.parseInt(textFieldCateID.getText());
                 
             	  int row = TableSalesList.getSelectedRow();
+				  System.out.println();
                   if(row ==-1)
                   {
                     JOptionPane.showMessageDialog(AdminScreen.this, "Please select row you want to delete!","Error",JOptionPane.ERROR_MESSAGE);
@@ -349,13 +361,14 @@ public class AdminScreen extends JFrame {
 		btnDeleteItemCart.setBounds(612, 452, 267, 40);
 		panelSale.add(btnDeleteItemCart);
 		
-		textFieldSearchSell = new JTextField();
+		textFieldSearchSell = new RoundJTextField(60);
 		textFieldSearchSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldSearchSell.setBounds(117, 27, 346, 40);
 		panelSale.add(textFieldSearchSell);
 		textFieldSearchSell.setColumns(10);
 		
-		JButton btnSearchSell = new JButton("Search");
+		JButton btnSearchSell = new view.Style.ButtonGradient();
+		btnSearchSell.setText("SEARCH");
 		btnSearchSell.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        String searchTerm = textFieldSearchSell.getText();
@@ -372,13 +385,14 @@ public class AdminScreen extends JFrame {
 		lblNewLabel.setBounds(267, 339, 76, 38);
 		panelSale.add(lblNewLabel);
 		
-		textFieldCateID = new JTextField();
+		textFieldCateID = new RoundJTextField(60);
 		textFieldCateID.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCateID.setColumns(10);
 		textFieldCateID.setBounds(367, 339, 76, 38);
 		panelSale.add(textFieldCateID);
 		
 		JComboBox comboBoxSell = new JComboBox();
+		
 		comboBoxSell.setFont(new Font("Arial", Font.PLAIN, 16));
 		comboBoxSell.setBounds(739, 24, 144, 43);
 		panelSale.add(comboBoxSell);
@@ -396,12 +410,14 @@ public class AdminScreen extends JFrame {
                 switch (selectedOption) {
                     case "Vợt":
                         // Xử lý khi "Vợt" được chọn
-
+						
                     	SelectComboBoxSellTable(1);
 				    break;
                     case "Giày":
                         // Xử lý khi "Giày" được chọn
                    // 	String giay = "2";
+				  
+
                     	SelectComboBoxSellTable(2);
                     	break;
                     case "Trang phục":
@@ -447,17 +463,19 @@ public class AdminScreen extends JFrame {
 
 		//Phần tab quản lý
 		
-		JPanel panelManageProduct = new JPanel();
+		
+        BackgroundPanel panelManageProduct = new BackgroundPanel(backgroundImage);
 		tabbedPane.addTab("MANAGE PRODUCT", null, panelManageProduct, null);
 		panelManageProduct.setLayout(null);
 		
 		JLabel LabelTotalManagementList = new JLabel("LIST OF ITEMS");
 		LabelTotalManagementList.setHorizontalAlignment(SwingConstants.CENTER);
-		LabelTotalManagementList.setFont(new Font("Tahoma", Font.BOLD, 18));
-		LabelTotalManagementList.setBounds(510, 63, 184, 44);
+		LabelTotalManagementList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		LabelTotalManagementList.setBounds(410, 63, 184, 44);
 		panelManageProduct.add(LabelTotalManagementList);
 				
-		JButton ButtonAddManage = new JButton("ADD TO INVENTORY");
+		JButton ButtonAddManage = new view.Style.ButtonGradient();
+		ButtonAddManage.setText("ADD TO INVENTORY");
 		ButtonAddManage.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonAddManage.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("Add_icon.png"))));
 		ButtonAddManage.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -487,7 +505,7 @@ public class AdminScreen extends JFrame {
 		LabelTotalManage.setBounds(10, 610, 184, 44);
 		panelManageProduct.add(LabelTotalManage);
 		
-		TextT0talManage = new JTextField();
+		TextT0talManage = new RoundJTextField(60);
 		TextT0talManage.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		float savedTotal = Preferences.userNodeForPackage(AdminScreen.class).getFloat(TOTAL_KEY, 1000000000f);
         TextT0talManage.setText(String.valueOf(savedTotal));
@@ -525,25 +543,25 @@ public class AdminScreen extends JFrame {
 		LabelCostInput.setBounds(32, 535, 144, 44);
 		panelManageProduct.add(LabelCostInput);
 		
-		textFieldIDItem = new JTextField();
+		textFieldIDItem = new RoundJTextField(60);
 		textFieldIDItem.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldIDItem.setColumns(10);
 		textFieldIDItem.setBounds(172, 378, 80, 38);
 		panelManageProduct.add(textFieldIDItem);
 		
-		textFieldNameItem = new JTextField();
+		textFieldNameItem = new RoundJTextField(60);
 		textFieldNameItem.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldNameItem.setColumns(10);
 		textFieldNameItem.setBounds(186, 427, 221, 38);
 		panelManageProduct.add(textFieldNameItem);
 		
-		textFieldOldCount = new JTextField();
+		textFieldOldCount = new RoundJTextField(60);
 		textFieldOldCount.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldOldCount.setColumns(10);
 		textFieldOldCount.setBounds(172, 484, 57, 38);
 		panelManageProduct.add(textFieldOldCount);
 		
-		textFieldCostInput = new JTextField();
+		textFieldCostInput = new RoundJTextField(60);
 		textFieldCostInput.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCostInput.setColumns(10);
 		textFieldCostInput.setBounds(186, 534, 221, 38);
@@ -554,7 +572,8 @@ public class AdminScreen extends JFrame {
 		LabelVND.setBounds(594, 610, 40, 44);
 		panelManageProduct.add(LabelVND);
 		
-		JButton ButtonUpdateManage = new JButton("UPDATE QUANTITY OF ITEMS");
+		JButton ButtonUpdateManage = new view.Style.ButtonGradient();
+		ButtonUpdateManage.setText("UPDATE QUANTITY OF ITEMS");
 		ButtonUpdateManage.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonUpdateManage.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("update_icon.png"))));
 
@@ -591,7 +610,8 @@ public class AdminScreen extends JFrame {
 	        });			
 		panelManageProduct.add(ButtonUpdateManage);
 
-		JButton ButtonXoaManage = new JButton("DELETE ITEMS");
+		JButton ButtonXoaManage =new view.Style.ButtonGradient();
+		ButtonXoaManage.setText("DELETE ITEMS");
 		ButtonXoaManage.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonXoaManage.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("Delete_icon.png"))));
 		ButtonXoaManage.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -603,13 +623,14 @@ public class AdminScreen extends JFrame {
 		LabelNewCount.setBounds(239, 481, 125, 44);
 		panelManageProduct.add(LabelNewCount);
 		
-		textFieldNewCount = new JTextField();
+		textFieldNewCount = new RoundJTextField(60);
 		textFieldNewCount.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldNewCount.setColumns(10);
 		textFieldNewCount.setBounds(374, 484, 57, 38);
 		panelManageProduct.add(textFieldNewCount);
 		
-		JButton btnLogout = new JButton("LOG OUT");
+		JButton btnLogout = new view.Style.ButtonGradient();
+		btnLogout.setText("LOG OUT");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int Confirm = JOptionPane.showConfirmDialog(AdminScreen.this, "Are you sure ?");
@@ -623,13 +644,14 @@ public class AdminScreen extends JFrame {
 		btnLogout.setBounds(828, 612, 138, 44);
 		panelManageProduct.add(btnLogout);
 		
-		textFieldFindManageProduct = new JTextField();
+		textFieldFindManageProduct = new RoundJTextField(60);
 		textFieldFindManageProduct.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldFindManageProduct.setBounds(136, 10, 336, 43);
 		panelManageProduct.add(textFieldFindManageProduct);
 		textFieldFindManageProduct.setColumns(10);
 		
-		JButton btnFindMangeProduct = new JButton("Search");
+		JButton btnFindMangeProduct =new view.Style.ButtonGradient();
+		btnFindMangeProduct.setText("SEARCH");
 		btnFindMangeProduct.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				 String searchTerm = textFieldFindManageProduct.getText();
@@ -645,7 +667,7 @@ public class AdminScreen extends JFrame {
 		lblIdCate.setBounds(269, 375, 72, 44);
 		panelManageProduct.add(lblIdCate);
 		
-		textFieldIDCATE = new JTextField();
+		textFieldIDCATE = new RoundJTextField(60);
 		textFieldIDCATE.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldIDCATE.setColumns(10);
 		textFieldIDCATE.setBounds(351, 378, 80, 38);
@@ -748,7 +770,7 @@ public class AdminScreen extends JFrame {
 	         });	
 		//Quản lý nhân viên
 		
-		JPanel panelManageCashier = new JPanel();
+        BackgroundPanel panelManageCashier = new BackgroundPanel(backgroundImage);
 		tabbedPane.addTab("MANAGE CASHIER", null, panelManageCashier, null);
 		
 		tableModelEmployeeManage = new DefaultTableModel(new Object[][]{}, new String[]{"ID EMPLOYEE", "NAME", "GMAIL", "PASSWORD", "PHONENUMBER", "WORKHOUR"});
@@ -805,31 +827,32 @@ public class AdminScreen extends JFrame {
 		LabelEmployeeNameWORKHOUR.setBounds(90, 539, 122, 44);
 		panelManageCashier.add(LabelEmployeeNameWORKHOUR);
 		
-		TextEmployeeName = new JTextField();
+		TextEmployeeName = new RoundJTextField(60);
 		TextEmployeeName.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TextEmployeeName.setColumns(10);
 		TextEmployeeName.setBounds(253, 398, 221, 38);
 		panelManageCashier.add(TextEmployeeName);
 		
-		TextEmployeePhone = new JTextField();
+		TextEmployeePhone = new RoundJTextField(60);
 		TextEmployeePhone.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TextEmployeePhone.setColumns(10);
 		TextEmployeePhone.setBounds(253, 446, 221, 38);
 		panelManageCashier.add(TextEmployeePhone);
 		
-		TextEmployeeGmail = new JTextField();
+		TextEmployeeGmail = new RoundJTextField(60);
 		TextEmployeeGmail.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TextEmployeeGmail.setColumns(10);
 		TextEmployeeGmail.setBounds(253, 494, 221, 38);
 		panelManageCashier.add(TextEmployeeGmail);
 		
-		TextEmployeeWorkHour = new JTextField();
+		TextEmployeeWorkHour = new RoundJTextField(60);
 		TextEmployeeWorkHour.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TextEmployeeWorkHour.setColumns(10);
 		TextEmployeeWorkHour.setBounds(253, 542, 221, 38);
 		panelManageCashier.add(TextEmployeeWorkHour);
 		
-		JButton btnDeleteEmployee = new JButton("DELETE EMPLOYEE");
+		JButton btnDeleteEmployee = new view.Style.ButtonGradient();
+		btnDeleteEmployee.setText("DELETE EMPLOYEE");
 		btnDeleteEmployee.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
@@ -854,7 +877,8 @@ public class AdminScreen extends JFrame {
 		btnDeleteEmployee.setBounds(610, 384, 301, 50);
 		panelManageCashier.add(btnDeleteEmployee);
 		
-		JButton btnUpdateInformation = new JButton("UPDATE INFORMATION");
+		JButton btnUpdateInformation = new view.Style.ButtonGradient();
+		btnUpdateInformation.setText("UPDATE INFORMATION");
 		btnUpdateInformation.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
@@ -886,7 +910,8 @@ public class AdminScreen extends JFrame {
 		btnUpdateInformation.setBounds(610, 466, 301, 50);
 		panelManageCashier.add(btnUpdateInformation);
 		
-		JButton btnSearchEmployee = new JButton("SEARCH");
+		JButton btnSearchEmployee = new view.Style.ButtonGradient();
+		btnSearchEmployee.setText("SEARCH");
 		btnSearchEmployee.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
@@ -897,11 +922,18 @@ public class AdminScreen extends JFrame {
 		btnSearchEmployee.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnSearchEmployee.setBounds(623, 10, 133, 38);
 		panelManageCashier.add(btnSearchEmployee);
+		//btn chat
 		
-		JButton btnChat = new JButton("CHAT");	
+		JButton btnChat =new view.Style.ButtonGradient();
+		btnChat.setText("CHAT");
 		btnChat.addActionListener(new ActionListener() {
 			@Override
             public void actionPerformed(ActionEvent e) {
+				JFrame serverFrame = new JFrame("Server");
+				serverFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				serverFrame.setSize(400, 300);
+				serverFrame.getContentPane().add(new MultiClientServer());
+				serverFrame.setVisible(true);
 				
 			}
 		     	});
@@ -909,8 +941,7 @@ public class AdminScreen extends JFrame {
 		btnChat.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnChat.setBounds(679, 546, 182, 50);
 		panelManageCashier.add(btnChat);
-		
-		textFieldSearchEmployee = new JTextField();
+		textFieldSearchEmployee = new RoundJTextField(60);
 		textFieldSearchEmployee.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldSearchEmployee.setColumns(10);
 		textFieldSearchEmployee.setBounds(253, 10, 321, 38);
@@ -918,11 +949,11 @@ public class AdminScreen extends JFrame {
 		
 		JLabel lblNewLabel_1 = new JLabel("EMPLOYEE LIST");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 18));
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblNewLabel_1.setBounds(371, 68, 227, 36);
 		panelManageCashier.add(lblNewLabel_1);
 		
-		textFieldID = new JTextField();
+		textFieldID = new RoundJTextField(60);
 		textFieldID.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldID.setColumns(10);
 		textFieldID.setBounds(253, 347, 221, 38);
@@ -933,7 +964,7 @@ public class AdminScreen extends JFrame {
 		lblId.setBounds(94, 347, 118, 44);
 		panelManageCashier.add(lblId);
 		
-		textFieldPassEmployee = new JTextField();
+		textFieldPassEmployee = new RoundJTextField(60);
 		textFieldPassEmployee.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldPassEmployee.setColumns(10);
 		textFieldPassEmployee.setBounds(253, 590, 221, 38);
@@ -1083,10 +1114,12 @@ public void SelectComboBoxSellTable(int CateID) {
     }
 	
 	public void clearFields() {
-        textFieldIDItem.setText("");
-        textFieldNameItem.setText("");
-        textFieldOldCount.setText("");
-        textFieldCostInput.setText("");
+		textFieldIDItemSell.setText("");
+        textFieldNameItemSell.setText("");
+        textFieldCateID.setText("");
+        textFieldCostSell.setText("");
+        textFieldCountSellWarehouse.setText("");
+        textFieldCountNeedBuy.setText("");
     }
 
 	public static void main(String[] args) {
