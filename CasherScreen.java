@@ -1,8 +1,6 @@
 package view;
 
-import java.awt.EventQueue;
-
-
+import java.awt.EventQueue;  
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -14,15 +12,17 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
- /*import dao.ItemDAO;
+import dao.CashierItemDAO;
+import model.ItemModelSell;
 import model.productModel;
-import model.ItemModelSell;*/
+import model.ItemModelSell;
 import javax.swing.JTabbedPane; 
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JTextField;
 import java.awt.Component;
@@ -41,38 +41,33 @@ import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
 
-public class CasherScreen extends JFrame {
+public class CashierScreen extends JFrame {
 
 	public static final long serialVersionUID = 1L;
 	public JPanel contentPane;
 	public JTextField textField;
-	public JTextField TextT0talManage;
 	public JTextField TextTotalCart;
 	public JTable TableTotalSalesList;
 	public JTable TableSalesList;
-	public JTable TableTotalManagementList;
-	public JTextField textFieldIDItem;
 	public JTextField textFieldNameItem;
-	public JTextField textFieldOldCount;
-	public JTextField textFieldCostInput;
 	public DefaultTableModel tableModel;
 	public DefaultTableModel tableModel1;
-//	public ItemDAO ItemDAO = new ItemDAO() ; 
-//	ArrayList<productModel> result = new ArrayList<productModel>();
-	public JTextField textFieldIDItemSell;
-	public JTextField textFieldNameItemSell;
+	public CashierItemDAO ItemDAO = new CashierItemDAO() ; 
 	public JTextField textFieldCostSell;
 	public JTextField textFieldCountNeedBuy;
-	public DefaultTableModel tableModel2;
+	public DefaultTableModel tableModelSale;
 	public int currentCount;
     public static final String TOTAL_KEY = "totalKey";
 	public float totalCost = 0.0f;
-//	public productModel itemModel;
-	private JTextField textFieldCountSellWarehouse;
-	private JTextField textFieldNewCount;
-	private JTextField textFieldFind;
+	public productModel itemModel;
+	public JTextField textFieldCountSellWarehouse;
+	public JTextField textFieldNewCount;
+	public JTextField textFieldFind;
+	public JTextField textFieldNameItemSell;
+	public JTextField textFieldIDItemSell;
+	public JTextField textFieldCateID;
 	
-	public CasherScreen() {
+	public CashierScreen() {
 	        // ...
 	    //    ChangeScreen newScreenInstance = new ChangeScreen(this); // Pass 'this' as the argument
 	        // ...
@@ -83,7 +78,7 @@ public class CasherScreen extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		URL url = CasherScreen.class.getResource("52745-badminton-icon.png");
+		URL url = CashierScreen.class.getResource("52745-badminton-icon.png");
 		if (url != null) {
 		    Image imagethemgiohang = Toolkit.getDefaultToolkit().createImage(url);
 		    this.setIconImage(imagethemgiohang); 
@@ -98,18 +93,9 @@ public class CasherScreen extends JFrame {
 		tabbedPane.addTab("SELL", null, panelSale, null);
 		panelSale.setLayout(null);
 		
-		JLabel LabelTotalSalesList = new JLabel("LIST OF ITEMS");
-		LabelTotalSalesList.setBounds(405, 79, 205, 27);
-		LabelTotalSalesList.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		panelSale.add(LabelTotalSalesList);
-				
-		TextTotalCart = new JTextField();
-		TextTotalCart.setBounds(224, 623, 237, 40);
-		TextTotalCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panelSale.add(TextTotalCart);
-		TextTotalCart.setColumns(10);		
+		// TẠO BẢNG VÀ THAO TÁC VỚI BẢNG
 		
-		tableModel = new DefaultTableModel(new Object[][]{}, new String[]{"ID ITEM", "ITEM NAME", "INVENTORY", "PRICE"});
+		tableModel = new DefaultTableModel(new Object[][]{}, new String[]{"ProductID", "Name", "Price", "StockQuantity", "CategoryId"});
 		TableTotalSalesList = new JTable(tableModel);
 		TableTotalSalesList.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TableTotalSalesList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -120,15 +106,17 @@ public class CasherScreen extends JFrame {
 	            // Check if a row is selected
 	            if (selectedRow != -1) {
 
-	            	Object iditem = TableTotalSalesList.getValueAt(selectedRow, 0);
-	                Object nameitem = TableTotalSalesList.getValueAt(selectedRow, 1);
-	                Object  count = TableTotalSalesList.getValueAt(selectedRow, 2);
-	                Object costinput = TableTotalSalesList.getValueAt(selectedRow, 3);
-
-	                textFieldIDItemSell.setText(iditem.toString());
-	                textFieldNameItemSell.setText(nameitem.toString());	 
-	                textFieldCountSellWarehouse.setText(count.toString());	 
-	                textFieldCostSell.setText(costinput.toString());
+	            	Object ProductID = TableTotalSalesList.getValueAt(selectedRow, 0);
+	                Object Name = TableTotalSalesList.getValueAt(selectedRow, 1);
+	                Object Price = TableTotalSalesList.getValueAt(selectedRow, 2);
+	                Object StockQuantity = TableTotalSalesList.getValueAt(selectedRow, 3);
+	                Object categoryId = TableTotalSalesList.getValueAt(selectedRow, 4);
+	                
+	                textFieldIDItemSell.setText(ProductID.toString());
+	                textFieldNameItemSell.setText(Name.toString());	 
+	                textFieldCountSellWarehouse.setText(StockQuantity.toString());	 
+	                textFieldCostSell.setText(Price.toString());
+	                textFieldCateID.setText(categoryId.toString());
 	            }
 	        }
 	    });    
@@ -136,8 +124,8 @@ public class CasherScreen extends JFrame {
 		scrollPaneTableTotalSalesList.setBounds(10, 129, 975, 194);
 		panelSale.add(scrollPaneTableTotalSalesList);
 		
-		tableModel2 = new DefaultTableModel(new Object[][]{}, new String[]{"ID ITEM", "ITEM NAME", "QUANTITY", "PRICE"});
-		TableSalesList = new JTable(tableModel2);
+		tableModelSale = new DefaultTableModel(new Object[][]{}, new String[]{"ID PRODUCT", "NAME PRODUCT", "PRICE", "QUANTITY", "IDCATEGORY"});
+		TableSalesList = new JTable(tableModelSale);
 		TableSalesList.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TableSalesList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
@@ -147,11 +135,12 @@ public class CasherScreen extends JFrame {
 	            // Check if a row is selected
 	            if (selectedRow != -1) {
 	                // Get data from the selected row
-	                Object iditem = TableSalesList.getValueAt(selectedRow, 0);
+	            	Object iditem = TableSalesList.getValueAt(selectedRow, 0);
 	                Object nameitem = TableSalesList.getValueAt(selectedRow, 1);
-	                Object  count = TableSalesList.getValueAt(selectedRow, 2);
-	                Object  countofTableTotalSalesList = TableTotalSalesList.getValueAt(selectedRow, 2);
-	                Object costinput = TableSalesList.getValueAt(selectedRow, 3);
+	                Object costinput = TableSalesList.getValueAt(selectedRow, 2);
+	                Object  count = TableSalesList.getValueAt(selectedRow, 3);
+	                Object  countofTableTotalSalesList = TableTotalSalesList.getValueAt(selectedRow, 3);
+	                Object categoryId = TableSalesList.getValueAt(selectedRow, 4);
 
 	                // Display data in TextFields
 	                textFieldIDItemSell.setText(iditem.toString());
@@ -169,70 +158,26 @@ public class CasherScreen extends JFrame {
 		scrollPaneTableSalesList.setBounds(10, 502, 975, 76);
 		scrollPaneTableSalesList.setToolTipText("");
 		panelSale.add(scrollPaneTableSalesList);
-	//	TableDachSachTongSell();
-	//	TableMua();
+		TableDachSachTongSell();
 		
-		JButton ButtonAddToCart = new JButton("ADD TO CART");	
-		ButtonAddToCart.setBounds(222, 452, 221, 40);
-		 ButtonAddToCart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(CasherScreen.class.getResource("Cart_icon.png"))));
-		ButtonAddToCart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-            	int iditemsell = Integer.parseInt(textFieldIDItemSell.getText());
-                String nameitemsell = textFieldNameItemSell.getText(); 
-                int countsell = Integer.parseInt(textFieldCountNeedBuy.getText());
-                float costinputsell =Float.parseFloat( textFieldCostSell.getText());
-                int count = Integer.parseInt(textFieldCountSellWarehouse.getText());
-                float itemTotalCost = costinputsell * countsell;               
-                totalCost +=  itemTotalCost;  
-                int newCount = count - countsell;
-                TextTotalCart.setText(String.valueOf(totalCost));            
-               textFieldCountSellWarehouse.setText(String.valueOf(newCount));
-               int countsellnew = Integer.parseInt(textFieldCountSellWarehouse.getText());
-          /*      ItemModelSell item = new ItemModelSell(iditemsell, nameitemsell, countsell,costinputsell);
-                ItemDAO.getInstanItemDAO().inserttablesell(item);
-                productModel itemud = new productModel(iditemsell, nameitemsell, countsellnew, costinputsell);
-                ItemDAO.getInstanItemDAO().update(itemud); */ 
-                    // Cập nhật bảng ngay tại đây
-                DefaultTableModel model = (DefaultTableModel) TableTotalSalesList.getModel();
-                int selectedRow = TableTotalSalesList.getSelectedRow();
-                if (selectedRow != -1) {
-                    model.setValueAt(iditemsell, selectedRow, 0);
-                    model.setValueAt(nameitemsell, selectedRow, 1);
-                    model.setValueAt(countsellnew, selectedRow, 2);
-                    model.setValueAt(costinputsell, selectedRow, 3);
-                }
-  //             TableMua();
-            }
-        });
-		ButtonAddToCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panelSale.add(ButtonAddToCart);
+		// TẠO LABEL VÀ TEXTFIELD
 		
+		JLabel LabelTotalSalesList = new JLabel("LIST OF ITEMS");
+		LabelTotalSalesList.setBounds(405, 79, 205, 27);
+		LabelTotalSalesList.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		panelSale.add(LabelTotalSalesList);
+				
+		TextTotalCart = new JTextField();
+		TextTotalCart.setBounds(224, 623, 237, 40);
+		TextTotalCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		panelSale.add(TextTotalCart);
+		TextTotalCart.setColumns(10);		
+
 		JLabel LabelTongTienSell = new JLabel("TOTAL MONEY");
 		LabelTongTienSell.setBounds(291, 586, 126, 27);
 		LabelTongTienSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panelSale.add(LabelTongTienSell);
-		
-		JButton ButtonBuy = new JButton("BUY");
-		ButtonBuy.setHorizontalAlignment(SwingConstants.LEFT);
-		ButtonBuy.setBounds(524, 624, 126, 38);
-		ButtonBuy.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(CasherScreen.class.getResource("cash-icon.png"))));
-
-		ButtonBuy.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panelSale.add(ButtonBuy);
-		
-		textFieldIDItemSell = new JTextField();
-		textFieldIDItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldIDItemSell.setColumns(10);
-		textFieldIDItemSell.setBounds(222, 339, 221, 38);
-		panelSale.add(textFieldIDItemSell);
-		
-		textFieldNameItemSell = new JTextField();
-		textFieldNameItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldNameItemSell.setColumns(10);
-		textFieldNameItemSell.setBounds(224, 393, 221, 38);
-		panelSale.add(textFieldNameItemSell);
-		
+		panelSale.add(LabelTongTienSell);		
+	
 		textFieldCostSell = new JTextField();
 		textFieldCostSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCostSell.setColumns(10);
@@ -270,22 +215,95 @@ public class CasherScreen extends JFrame {
 		textFieldCountSellWarehouse.setBounds(698, 393, 126, 38);
 		panelSale.add(textFieldCountSellWarehouse);
 		textFieldCountSellWarehouse.setColumns(10);
+			
+		textFieldFind = new JTextField();
+		textFieldFind.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldFind.setBounds(118, 29, 346, 40);
+		panelSale.add(textFieldFind);
+		textFieldFind.setColumns(10);
+				
+		JLabel lblIdCate = new JLabel("ID CATE");
+		lblIdCate.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblIdCate.setBounds(301, 330, 95, 44);
+		panelSale.add(lblIdCate);
 		
-		JButton btnNewButton = new JButton("REFRESH");
-		btnNewButton.addActionListener(new ActionListener() {
+		textFieldNameItemSell = new JTextField();
+		textFieldNameItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldNameItemSell.setColumns(10);
+		textFieldNameItemSell.setBounds(197, 393, 271, 38);
+		panelSale.add(textFieldNameItemSell);
+		
+		textFieldIDItemSell = new JTextField();
+		textFieldIDItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldIDItemSell.setColumns(10);
+		textFieldIDItemSell.setBounds(197, 333, 76, 38);
+		panelSale.add(textFieldIDItemSell);
+		
+		textFieldCateID = new JTextField();
+		textFieldCateID.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textFieldCateID.setColumns(10);
+		textFieldCateID.setBounds(392, 333, 76, 38);
+		panelSale.add(textFieldCateID);
+		
+		// TẠO NÚT VÀ THAO TÁC VỚI NÚT
+		
+		JButton ButtonAddToCart = new JButton("ADD TO CART");	
+		ButtonAddToCart.setBounds(222, 452, 221, 40);
+		ButtonAddToCart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(CashierScreen.class.getResource("Cart_icon.png"))));
+		ButtonAddToCart.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	int iditemsell = Integer.parseInt(textFieldIDItemSell.getText());
+            	int idcategory = Integer.parseInt(textFieldCateID.getText());
+                String nameitemsell = textFieldNameItemSell.getText(); 
+                int countsell = Integer.parseInt(textFieldCountNeedBuy.getText());
+                float costinputsell =Float.parseFloat( textFieldCostSell.getText());
+                int count = Integer.parseInt(textFieldCountSellWarehouse.getText());
+                // Tính toán dữ liệu
+                float itemTotalCost = costinputsell * countsell;               
+                totalCost +=  itemTotalCost;  
+                int newCount = count - countsell;
+                
+                TextTotalCart.setText(String.valueOf(totalCost)); 
+                
+               textFieldCountSellWarehouse.setText(String.valueOf(newCount));
+               int countsellnew = Integer.parseInt(textFieldCountSellWarehouse.getText());
+                ItemModelSell item = new ItemModelSell(iditemsell, nameitemsell,costinputsell, countsell,idcategory);
+                CashierItemDAO.getInstanitemDAO().inserttablesell(item);
+                productModel itemud = new productModel(iditemsell, nameitemsell, costinputsell, countsellnew, idcategory);
+                CashierItemDAO.getInstanitemDAO().update(itemud);  
+                    // Cập nhật bảng ngay tại đây
+                DefaultTableModel model = (DefaultTableModel) TableTotalSalesList.getModel();
+                int selectedRow = TableTotalSalesList.getSelectedRow();
+                if (selectedRow != -1) {
+                    model.setValueAt(iditemsell, selectedRow, 0);
+                    model.setValueAt(nameitemsell, selectedRow, 1);
+                    model.setValueAt(costinputsell, selectedRow, 2);
+                    model.setValueAt(countsellnew, selectedRow, 3);
+                    model.setValueAt(idcategory, selectedRow, 4);
+                }
+               TableMua();
+            }
+        });
+		ButtonAddToCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		panelSale.add(ButtonAddToCart);
+		
+		JButton btnRefresh = new JButton("REFRESH");
+		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		//		refreshbutton();
+				refreshbutton();
 			}
 		});
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnNewButton.setBounds(739, 623, 126, 40);
-		panelSale.add(btnNewButton);
+		btnRefresh.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnRefresh.setBounds(739, 623, 126, 40);
+		panelSale.add(btnRefresh);
 		
 		JButton btnDeleteItemCart = new JButton("REMOVE FROM CART");
 		btnDeleteItemCart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
             	int iditemsell = Integer.parseInt(textFieldIDItemSell.getText());
+                int idcategory = Integer.parseInt(textFieldCateID.getText());
                 String nameitemsell = textFieldNameItemSell.getText(); 
                 int countsell = Integer.parseInt(textFieldCountNeedBuy.getText());
                 int countofTableTotalSalesList = Integer.parseInt(textFieldCountSellWarehouse.getText());
@@ -295,129 +313,140 @@ public class CasherScreen extends JFrame {
             	  int row = TableSalesList.getSelectedRow();
                   if(row ==-1)
                   {
-                    JOptionPane.showMessageDialog(CasherScreen.this, "Please select row you want to delete!","Loi",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(CashierScreen.this, "Please select row you want to delete!","Error",JOptionPane.ERROR_MESSAGE);
                   }
                   else
                   {
-                        int Confirm = JOptionPane.showConfirmDialog(CasherScreen.this, "Are you sure ?");
+                        int Confirm = JOptionPane.showConfirmDialog(CashierScreen.this, "Are you sure ?");
                         if (Confirm==JOptionPane.YES_OPTION)
                         {    
-                      /*  	productModel itemud = new productModel(iditemsell, nameitemsell, countsellnew, costinputsell);
-                        ItemDAO.getInstanItemDAO().update(itemud); */
+                        	productModel itemud = new productModel(iditemsell, nameitemsell, costinputsell, countsellnew, idcategory);
+                        	CashierItemDAO.getInstanitemDAO().update(itemud); 
                         // Cập nhật bảng ngay tại đây
                     DefaultTableModel model = (DefaultTableModel) TableTotalSalesList.getModel();
                     int selectedRow = TableTotalSalesList.getSelectedRow();
                     if (selectedRow != -1) {
                         model.setValueAt(iditemsell, selectedRow, 0);
                         model.setValueAt(nameitemsell, selectedRow, 1);
-                        model.setValueAt(countsellnew, selectedRow, 2);
-                        model.setValueAt(costinputsell, selectedRow, 3);
+                        model.setValueAt(costinputsell, selectedRow, 2);
+                        model.setValueAt(countsellnew, selectedRow, 3);
+                        model.setValueAt(idcategory, selectedRow, 4);
+
                     }                        
-               /*     int itemid =Integer.valueOf(String.valueOf( TableSalesList.getValueAt(row,0)));                
-                    ItemDAO.getInstanItemDAO().deletesalecart(itemid); */
-                    tableModel2.removeRow(row);                     
+                    int itemid =Integer.valueOf(String.valueOf( TableSalesList.getValueAt(row,0)));                
+                    CashierItemDAO.getInstanitemDAO().deletesalecart(itemid); 
+                    tableModelSale.removeRow(row);                     
           }
                   }	                 
-     //             clearFields();
+                 clearFields();
              }
          });
-		btnDeleteItemCart.setIcon(new ImageIcon(CasherScreen.class.getResource("/view/Delete_icon.png")));
+		
+		btnDeleteItemCart.setIcon(new ImageIcon(CashierScreen.class.getResource("/view/Delete_icon.png")));
 		btnDeleteItemCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		btnDeleteItemCart.setBounds(612, 452, 267, 40);
 		panelSale.add(btnDeleteItemCart);
-		
-		textFieldFind = new JTextField();
-		textFieldFind.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldFind.setBounds(209, 27, 346, 40);
-		panelSale.add(textFieldFind);
-		textFieldFind.setColumns(10);
 		
 		JButton btnFind = new JButton("Search");
 		btnFind.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
 		        String searchTerm = textFieldFind.getText();
-	//	        searchByName(searchTerm);
+		        searchByName(searchTerm);
 		    }
 		});
 
 		btnFind.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnFind.setBounds(631, 26, 135, 43);
+		btnFind.setBounds(536, 26, 135, 43);
 		panelSale.add(btnFind);
 		
-	/*	String username = LoginScreenn.getUsername();
-		JLabel lblNewLabel = new JLabel(username);
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblNewLabel.setBounds(860, 0, 135, 23);
-		panelSale.add(lblNewLabel); */
+		JButton ButtonBuy = new JButton("BUY");
+		ButtonBuy.setHorizontalAlignment(SwingConstants.LEFT);
+		ButtonBuy.setBounds(524, 624, 126, 38);
+		ButtonBuy.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(CashierScreen.class.getResource("cash-icon.png"))));
+		ButtonBuy.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		panelSale.add(ButtonBuy);
 		
 		ButtonBuy.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
-	               	
+	              /* 	
 	            	 int count =Integer.parseInt( textFieldCountNeedBuy.getText());   
 		             float currentTotal = Float.parseFloat(TextT0talManage.getText());
 		             float costinput =Float.parseFloat( textFieldCostSell.getText());
 		             float newTotal = currentTotal + costinput*count;		      
-		  //             updateTextTongTienManage(newTotal);
+		               updateTextTongTienManage(newTotal);
 	            	  int iditemsell = Integer.parseInt(textFieldIDItemSell.getText());
 	                  String nameitemsell = textFieldNameItemSell.getText(); 
 	                  float costinputsell =Float.parseFloat( textFieldCostSell.getText());
 	                  int countsell = Integer.parseInt(textFieldCountSellWarehouse.getText());
-		                
-	   //         	openNewScreen();
+		                */
+	            	openpaymentscreenn();
 	            }
 	        });
+		
+		JComboBox comboBoxSell = new JComboBox();
+		comboBoxSell.setFont(new Font("Arial", Font.PLAIN, 16));
+		comboBoxSell.setBounds(739, 28, 144, 43);
+		panelSale.add(comboBoxSell);
+		comboBoxSell.addItem("");
+		comboBoxSell.addItem("Vợt");
+		comboBoxSell.addItem("Giày");
+		comboBoxSell.addItem("Trang phục");
+		comboBoxSell.addItem("Vật phẩm khác");
+		Font fontSell = new Font("Arial", Font.PLAIN, 16);
+		comboBoxSell.setFont(fontSell);
+		comboBoxSell.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Xử lý hành động tương ứng với mỗi lựa chọn
+                String selectedOption = (String) comboBoxSell.getSelectedItem();
+                switch (selectedOption) {
+                    case "Vợt":
+
+                    	SelectComboBoxSellTable(1);
+				    break;
+                    case "Giày":
+                       
+                    	SelectComboBoxSellTable(2);
+                    	break;
+                    case "Trang phục":
+                        
+                    	SelectComboBoxSellTable(3);          
+                    	break;
+                    case "Vật phẩm khác":
+
+                    	SelectComboBoxSellTable(4);   
+                    	break;
+                    default:
+                        break;
+                }
+            }
+        });
 
 	}
 	
-/*	public void openNewScreen() {
-		 
-        ChangeScreen NewScreen = new ChangeScreen();    
-        NewScreen.setVisible(true);
-        dispose();
-    }
+	// HÀM CHỨC NĂNG
 	
 	public void TableDachSachTongSell() {
-	   tableModel = (DefaultTableModel) TableTotalSalesList.getModel();
-	    ArrayList<productModel> itemDAO = new ItemDAO().getInstanItemDAO().selectAll() ;
-	    tableModel.getDataVector().removeAllElements();
-	    tableModel.setRowCount(0); // Clear existing data
-	    for(int i = 0; i < itemDAO.size();i++) {
-	    	tableModel.addRow(itemDAO.get(i).toObject());
-	    		    	
-	    }
-	} 
-	public void TableDachSachTongManage() {
-	   tableModel1 = (DefaultTableModel) TableTotalManagementList.getModel();
-	    ArrayList<productModel> itemDAO = new ItemDAO().getInstanItemDAO().selectAll() ;
-	    tableModel1.getDataVector().removeAllElements();
-	    tableModel1.setRowCount(0); // Clear existing data
-	    for(int i = 0; i < itemDAO.size();i++) {
-	    	tableModel1.addRow(itemDAO.get(i).toObject());
-	    }
-	}
+		   tableModel = (DefaultTableModel) TableTotalSalesList.getModel();
+		    ArrayList<productModel> AdminItemDAO = new CashierItemDAO().getInstanitemDAO().selectAll() ;
+		    tableModel.getDataVector().removeAllElements();
+		    tableModel.setRowCount(0); // Clear existing data
+		    for(int i = 0; i < AdminItemDAO.size();i++) {
+		    	tableModel.addRow(AdminItemDAO.get(i).toObject());
+		    		    	
+		    }
+		} 
+	
 	public void TableMua() {
-	    ArrayList<ItemModelSell> items = new ItemDAO().getInstanItemDAO().selectAlltablesell();
-	    tableModel2.getDataVector().removeAllElements();
-	    tableModel2.setRowCount(0); // Clear existing data
+	    ArrayList<ItemModelSell> items = new CashierItemDAO().getInstanitemDAO().selectProductCart();
+	    tableModelSale.getDataVector().removeAllElements();
+	    tableModelSale.setRowCount(0); // Clear existing data
 	    for (int i = 0; i < items.size(); i++) {
-	    	tableModel2.addRow(items.get(i).toObject());
+	    	tableModelSale.addRow(items.get(i).toObject());
 	    }
 	}
-	
-	public void refreshTable() {
-	    TableDachSachTongSell();		    
-	    TableDachSachTongManage();
-	}
-	
-	public void updateTextTongTienManage(float newTotal) {
-	    // Format the float value with two decimal places
-	    String formattedTotal = String.format("%.2f", newTotal);
-	    TextT0talManage.setText(formattedTotal);
-	    Preferences.userNodeForPackage(BigExerciseView.class).putFloat(TOTAL_KEY, newTotal);
-	}	
 	
 	private void searchByName(String searchTerm) {
-	    ArrayList<productModel> searchResults = ItemDAO.getInstanItemDAO().searchByName(searchTerm);
+	    ArrayList<productModel> searchResults = CashierItemDAO.getInstanitemDAO().searchByName(searchTerm);
 	    tableModel.getDataVector().removeAllElements();
 	    tableModel.setRowCount(0);
 
@@ -426,19 +455,56 @@ public class CasherScreen extends JFrame {
 	    }
 	}
 	
+	public void openpaymentscreenn() {		 
+		Paymentscreen paymentscreen = new Paymentscreen();    
+		paymentscreen.setVisible(true);
+		paymentscreen.setLocationRelativeTo(null);
+    }
+	
+	public void SelectComboBoxSellTable(int CateID) {
+		
+		tableModel = (DefaultTableModel) TableTotalSalesList.getModel();
+		    ArrayList<productModel> items = new CashierItemDAO().getInstanitemDAO().selectCategory(CateID);
+		    tableModel.getDataVector().removeAllElements();
+		    tableModel.setRowCount(0); // Clear existing data
+		    for (productModel result : items) {
+		    	tableModel.addRow(result.toObject());
+		    }
+		}
+		
+	public void refreshTable() {
+	    TableDachSachTongSell();		    
+	}
+	/*
+	public void updateTextTongTienManage(float newTotal) {
+	    // Format the float value with two decimal places
+	    String formattedTotal = String.format("%.2f", newTotal);
+	    TextT0talManage.setText(formattedTotal);
+	    Preferences.userNodeForPackage(BigExerciseView.class).putFloat(TOTAL_KEY, newTotal);
+	}	
+	
+		String username = LoginScreenn.getUsername();
+		JLabel lblNewLabel = new JLabel(username);
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblNewLabel.setBounds(860, 0, 135, 23);
+		panelSale.add(lblNewLabel); 
+	
 	public float getTotalCost() {
         return totalCost;
-    } */
-	
+    } 
+	*/
 	public void clearFields() {
-        textFieldIDItem.setText("");
-        textFieldNameItem.setText("");
-        textFieldOldCount.setText("");
-        textFieldCostInput.setText("");
+        textFieldIDItemSell.setText("");
+        textFieldNameItemSell.setText("");
+        textFieldCateID.setText("");
+        textFieldCostSell.setText("");
+        textFieldCountSellWarehouse.setText("");
+        textFieldCountNeedBuy.setText("");
+
     }
 	
 	public void refreshbutton() {
-		CasherScreen NewScreen = new CasherScreen();
+		CashierScreen NewScreen = new CashierScreen();
 		   
 	    NewScreen.setVisible(true);
 	dispose();
@@ -451,12 +517,13 @@ public class CasherScreen extends JFrame {
         dispose();
     }
 	
+	// HÀM MAIN
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					CasherScreen frame = new CasherScreen();
+					CashierScreen frame = new CashierScreen();
 					  frame.setLocationRelativeTo(null); 
 					frame.setVisible(true);
 				} catch (Exception e) {
