@@ -14,6 +14,7 @@ import dao.AdminItemDAO;
 import dao.PaymentItemDAO;
 import database.JDBCUtil;
 import model.ItemModelSell;
+import model.billModel;
 import model.productModel;
 import model.billitemModel;
 import javax.swing.JLabel;
@@ -31,6 +32,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +47,7 @@ public class Paymentscreen extends JFrame {
 	private DefaultTableModel tableModelBill;
 	private JTable TableBillList;
 	private JTextField txtFieldCustomerName;
-	private JTextField textField;
+	private JTextField textFieldCustomerPhone;
 	
 	public Paymentscreen(AdminScreen adminScreen) {
 	    this.adminScreen = adminScreen;
@@ -81,7 +83,6 @@ public class Paymentscreen extends JFrame {
 		scrollPaneTablebILLList.setBounds(52, 409, 975, 193);
 		scrollPaneTablebILLList.setToolTipText("");
 		contentPane.add(scrollPaneTablebILLList);
-		TableDachSachTongSell();
 		
 		JLabel LabelMain = new JLabel("ENTER THE AMOUNT OF MONEY GIVEN BY THE CUSTOMER");
 		LabelMain.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -93,12 +94,26 @@ public class Paymentscreen extends JFrame {
 		ButtonCalculateMoney.setBounds(730, 106, 140, 43);
 		ButtonCalculateMoney.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {          
-            	float totalCostInTable = getTotalCostFromTable();
-            	float cost = Float.parseFloat(textFieldCustomerMoney.getText());
-            	  AdminItemDAO.getInstanitemDAO().deleteTableSell(); 
-            	  float costchange =cost - totalCostInTable;
-            	  textFieldChange.setText(String.valueOf(costchange));
+            public void actionPerformed(ActionEvent e) {           	
+            	  
+              LocalDateTime Time = LocalDateTime.now();
+              String timebill = Time.toString();
+              int BillId = PaymentItemDAO.getInstanitemDAO().getBillCount();
+              String namecustomer= txtFieldCustomerName.getText();
+              String phonecusstomer = textFieldCustomerPhone.getText();	               																							
+              float totalprice =getTotalCostFromTable();                                      
+              float cost = Float.parseFloat(textFieldCustomerMoney.getText());
+         	  float costchange =cost - totalprice;
+         	  System.out.println(costchange);
+         	  textFieldChange.setText(String.valueOf(costchange));
+         	  billModel bill = new billModel(BillId, timebill, totalprice,namecustomer,phonecusstomer );
+              PaymentItemDAO.getInstanitemDAO().insert(bill);
+              PaymentItemDAO.getInstanitemDAO().deleteProductcart();
+  //             float newTotal = currentTotal - costinput*currentCount;
+//               updateTextTongTienManage(newTotal);
+      		SaleTable();
+
+            	  
             }
         });
 		contentPane.add(ButtonCalculateMoney);
@@ -138,10 +153,10 @@ public class Paymentscreen extends JFrame {
 		lblCustomerPhonenumber.setBounds(158, 260, 209, 40);
 		contentPane.add(lblCustomerPhonenumber);
 		
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(390, 260, 255, 40);
-		contentPane.add(textField);
+		textFieldCustomerPhone = new JTextField();
+		textFieldCustomerPhone.setColumns(10);
+		textFieldCustomerPhone.setBounds(390, 260, 255, 40);
+		contentPane.add(textFieldCustomerPhone);
 		
 		/*
 		contentPane.add(ButtonNewTrade);
@@ -173,6 +188,12 @@ public void handleClosing() {
     }
 }
 
+public void clearFields() {
+    textFieldCustomerMoney.setText("");
+    textFieldCustomerPhone.setText("");
+    txtFieldCustomerName.setText("");
+}
+
 public void openNewScreen() {
     // Close all existing instances of adminScreen  
     AdminScreen NewScreen = new AdminScreen();  
@@ -187,7 +208,7 @@ private float getTotalCostFromTable() {
 
     try {
         con = JDBCUtil.getConnection();
-        String sql = "SELECT SUM(costinputsell * countsell) AS totalCost FROM itemsell";
+        String sql = "SELECT SUM(StockQuantitycart * Pricecart) AS totalCost FROM productcart";
         preparedStatement = con.prepareStatement(sql);
         resultSet = preparedStatement.executeQuery();
         if (resultSet.next()) {
@@ -206,18 +227,7 @@ private float getTotalCostFromTable() {
         }
     }
     return 0; // Trả về 0 nếu có lỗi
-}
-
-public void TableDachSachTongSell() {
-	tableModelBill = (DefaultTableModel) TableBillList.getModel();
-	    ArrayList<billitemModel> itemDAO = new AdminItemDAO().getInstanitemDAO().selectAllBillItem() ;
-	    tableModelBill.getDataVector().removeAllElements();
-	    tableModelBill.setRowCount(0); // Clear existing data
-	    for(int i = 0; i < itemDAO.size();i++) {
-	    	tableModelBill.addRow(itemDAO.get(i).toObject());
-	    		    	
-	    }
-	} 
+} 
 
 public static void main(String[] args) {
     EventQueue.invokeLater(new Runnable() {
