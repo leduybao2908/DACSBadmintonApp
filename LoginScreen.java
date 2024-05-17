@@ -7,11 +7,13 @@ import javax.swing.border.EmptyBorder;
 
 import dao.AdminItemDAO;
 import view.Style.TextFields;
+import view.Style.ButtonCustom;
 import view.Style.PasswordFields;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -27,12 +29,12 @@ public class LoginScreen extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private static JTextField textUsername;
-	private JPasswordField textFieldPassword;
+	private static TextFields textUsername;
+	private PasswordFields textFieldPassword;
 	private JLabel lblNewLabel;
-	private JButton btnRegist;
-	private JRadioButton rdbtnCashier;
-	private JRadioButton rdbtnAdmin;
+	private ButtonCustom btnRegist;
+	private RadioButtonCustom rdbtnCashier;
+	private RadioButtonCustom rdbtnAdmin;
 	private JLabel lblLogin;
 	private JLabel lblNewLabel_1;
 	
@@ -53,26 +55,30 @@ public class LoginScreen extends JFrame {
 		contentPane.setLayout(null);
 		
 		textUsername = new TextFields();
-		textUsername.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		textUsername.setBounds(174, 172, 242, 55);
+		textUsername.setLabelText("username");
+		textUsername.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		textUsername.setBounds(100, 172, 300, 55);
 		contentPane.add(textUsername);
 		textUsername.setColumns(10);
 		
 		ButtonGroup buttonGroup = new ButtonGroup();
 
-        rdbtnCashier = new JRadioButton("Cashier");
+        rdbtnCashier = new RadioButtonCustom();
+		rdbtnCashier.setText("Cashier");
         rdbtnCashier.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        rdbtnCashier.setBounds(83, 311, 104, 33);
+        rdbtnCashier.setBounds(100, 311, 104, 33);
         contentPane.add(rdbtnCashier);
         buttonGroup.add(rdbtnCashier);
 
-        rdbtnAdmin = new JRadioButton("Admin");
+        rdbtnAdmin = new RadioButtonCustom();
+		rdbtnAdmin.setText("Admin");
         rdbtnAdmin.setFont(new Font("Tahoma", Font.PLAIN, 16));
         rdbtnAdmin.setBounds(279, 311, 104, 33);
         contentPane.add(rdbtnAdmin);
         buttonGroup.add(rdbtnAdmin);
         
-		JButton ButtonLogin = new JButton("LOGIN");
+		ButtonCustom ButtonLogin = new ButtonCustom();
+		ButtonLogin.setText("Login");
 		ButtonLogin.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		ButtonLogin.setBounds(120, 384, 208, 57);
 		ButtonLogin.addActionListener(new ActionListener() {
@@ -96,7 +102,8 @@ public class LoginScreen extends JFrame {
         });
 
 		
-		btnRegist = new JButton("REGISTER");
+		btnRegist = new ButtonCustom();
+		btnRegist.setText("Register");
 		btnRegist.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		btnRegist.setBounds(120, 472, 208, 57);
 		contentPane.add(btnRegist);
@@ -108,7 +115,7 @@ public class LoginScreen extends JFrame {
         });
 
 		contentPane.add(ButtonLogin);
-		
+	/*	
 		JLabel LabelUsername = new JLabel("USERNAME");
 		LabelUsername.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		
@@ -118,16 +125,16 @@ public class LoginScreen extends JFrame {
 		JLabel LabelPassword = new JLabel("PASSWORD");
 		LabelPassword.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		LabelPassword.setBounds(33, 233, 130, 53);
-		contentPane.add(LabelPassword);
+		
+		contentPane.add(LabelPassword); */
 		
 		textFieldPassword = new PasswordFields();
-		textFieldPassword.setBounds(174, 242, 242, 55);
+		textFieldPassword.setLabelText("password");
+		textFieldPassword.setShowAndHide(true);
+		textFieldPassword.setBounds(100, 242, 300, 55);
 		contentPane.add(textFieldPassword);
 		
-	//	lblNewLabel = new JLabel("");
-	//	lblNewLabel.setIcon(new ImageIcon(LoginScreen.class.getResource("badminton.jpg")));
-	//	lblNewLabel.setBounds(10, 10, 799, 464);
-	//	contentPane.add(lblNewLabel);
+		
 		
 		lblLogin = new JLabel("Login");
 		lblLogin.setFont(new Font("Tahoma", Font.BOLD, 20));
@@ -139,6 +146,18 @@ public class LoginScreen extends JFrame {
 		lblNewLabel_1.setBounds(194, 10, 78, 97);
 		contentPane.add(lblNewLabel_1);
 		
+
+		JLabel lblNewLabel = new JLabel("");
+        ImageIcon originalIcon = new ImageIcon(Paymentscreen.class.getResource("bglogin.jpg"));
+        Image originalImage = originalIcon.getImage();
+        Image scaledImage = originalImage.getScaledInstance(473, 630, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        lblNewLabel.setIcon(scaledIcon);
+        lblNewLabel.setBounds(0, 0, 473, 630);
+        contentPane.add(lblNewLabel);
+
+        // Set the background label to the lowest Z order
+        contentPane.setComponentZOrder(lblNewLabel, contentPane.getComponentCount() - 1);
 		setLocationRelativeTo(null);
 		
 	}
