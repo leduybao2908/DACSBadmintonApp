@@ -4,7 +4,12 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import dao.AdminItemDAO;
 import model.employeeModel;
+import view.Style.ButtonCustom;
+import view.Style.PasswordFields;
+import view.Style.TextFields;
 import model.adminModel;
 
 //import com.mysql.cj.jdbc.Driver;
@@ -18,6 +23,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -30,19 +36,20 @@ import javax.swing.JCheckBox;
 import java.awt.Color;
 import java.awt.SystemColor;
 //import org.jdesktop.swingx.border.DropShadowBorder;
+import java.awt.TextField;
 
 public class RegisterScreen extends JFrame {
 
 	private JPanel contentPane;
-	private JPasswordField textFieldConfirmpass;
-	private JTextField textFieldUsername;
-	private JPasswordField textFieldPassword;
-	private JTextField textFieldGmail;
+	private PasswordFields textFieldConfirmpass;
+	private TextFields textFieldUsername;
+	private PasswordFields textFieldPassword;
+	private TextFields textFieldGmail;
 	private JLabel lblNewLabel;
-	private JRadioButton rdbtnCashier;
-	private JRadioButton rdbtnAdmin;
-	private JTextField textFieldPhoneNumber;
-	private JPasswordField passwordField;
+	private RadioButtonCustom rdbtnCashier;
+	private RadioButtonCustom rdbtnAdmin;
+	private TextFields textFieldPhoneNumber;
+	private PasswordFields passwordField;
 	
 	
 	public static void main(String[] args) {
@@ -69,13 +76,15 @@ public class RegisterScreen extends JFrame {
 		
 		ButtonGroup buttonGroup = new ButtonGroup();
 
-        rdbtnCashier = new JRadioButton("Cashier");
+        rdbtnCashier =  new RadioButtonCustom();
+		rdbtnCashier.setText("Cashier");
         rdbtnCashier.setFont(new Font("Tahoma", Font.PLAIN, 16));
         rdbtnCashier.setBounds(64, 381, 104, 33);
         contentPane.add(rdbtnCashier);
         buttonGroup.add(rdbtnCashier);
 
-        rdbtnAdmin = new JRadioButton("Admin");
+        rdbtnAdmin =  new RadioButtonCustom();
+		rdbtnAdmin.setText("Admin");
         rdbtnAdmin.setFont(new Font("Tahoma", Font.PLAIN, 16));
         rdbtnAdmin.setBounds(287, 381, 104, 33);
         contentPane.add(rdbtnAdmin);
@@ -83,21 +92,24 @@ public class RegisterScreen extends JFrame {
 		
 		JLabel LabelUsername = new JLabel("Username");
 		LabelUsername.setFont(new Font("Tahoma", Font.BOLD, 16));
-		LabelUsername.setBounds(10, 67, 90, 37);
-		contentPane.add(LabelUsername);
+		LabelUsername.setBounds(10, 67, 90, 55);
+		//contentPane.add(LabelUsername);
 		
-		textFieldConfirmpass = new JPasswordField();
+		textFieldConfirmpass = new PasswordFields();
+		textFieldConfirmpass.setLabelText("Confirm password");
 		textFieldConfirmpass.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldConfirmpass.setBounds(185, 244, 248, 37);
+		textFieldConfirmpass.setBounds(100, 244, 300, 55);
 		contentPane.add(textFieldConfirmpass);
 		
-		textFieldUsername = new JTextField();
+		textFieldUsername = new TextFields();
+		textFieldUsername.setLabelText("User name");
 		textFieldUsername.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldUsername.setBounds(185, 67, 248, 37);
+		textFieldUsername.setBounds(100, 67, 300, 55);
 		contentPane.add(textFieldUsername);
 		textFieldUsername.setColumns(10);
 		
-		JButton ButtonLogin = new JButton("LOGIN");
+		ButtonCustom ButtonLogin = new ButtonCustom();
+		ButtonLogin.setText("LOGIN");
 //		ButtonLogin.setBackground(SystemColor.activeCaption);
 		ButtonLogin.addActionListener(new ActionListener() {
 	            public void actionPerformed(ActionEvent e) {
@@ -110,39 +122,43 @@ public class RegisterScreen extends JFrame {
 		ButtonLogin.setBounds(150, 443, 145, 53);
 		contentPane.add(ButtonLogin);
 		
-		textFieldPassword = new JPasswordField();
+		textFieldPassword = new PasswordFields();
+		textFieldPassword.setLabelText("Password");
 		textFieldPassword.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldPassword.setBounds(185, 185, 248, 37);
+		textFieldPassword.setBounds(100, 186, 300, 55);
 		contentPane.add(textFieldPassword);
 		
-		textFieldGmail = new JTextField();
+		textFieldGmail = new TextFields();
+		textFieldGmail.setLabelText("Gmail");
 		textFieldGmail.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldGmail.setBounds(185, 124, 248, 37);
+		textFieldGmail.setBounds(100, 124, 300, 55);
 		contentPane.add(textFieldGmail);
 		
 		JLabel LabelGmail = new JLabel("Gmail");
 		LabelGmail.setFont(new Font("Tahoma", Font.BOLD, 16));
-		LabelGmail.setBounds(10, 124, 90, 37);
-		contentPane.add(LabelGmail);
+		LabelGmail.setBounds(10, 124, 90, 55);
+		//contentPane.add(LabelGmail);
 		
 		JLabel LabelPassword = new JLabel("Password");
 		LabelPassword.setFont(new Font("Tahoma", Font.BOLD, 16));
-		LabelPassword.setBounds(10, 185, 90, 37);
-		contentPane.add(LabelPassword);
+		LabelPassword.setBounds(10, 100, 90, 55);
+		//contentPane.add(LabelPassword);
 		
 		JLabel LabelConfirmPass = new JLabel("Confirm Password");
 		LabelConfirmPass.setFont(new Font("Tahoma", Font.BOLD, 16));
-		LabelConfirmPass.setBounds(10, 244, 158, 37);
-		contentPane.add(LabelConfirmPass);
+		LabelConfirmPass.setBounds(10, 244, 158, 55);
+		//contentPane.add(LabelConfirmPass);
 		
-		JButton ButtonRegister = new JButton("REGISTER");
+		ButtonCustom ButtonRegister = new ButtonCustom();
+			ButtonRegister.setText("REGISTER");
+
 		ButtonRegister.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		ButtonRegister.setBounds(150, 506, 145, 53);
 		ButtonRegister.addActionListener(new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
-	            	int ID = itemDAO.getInstanitemDAO().getEmployeeCount() + 1;
-	            	int ADID = itemDAO.getInstanitemDAO().getAdminCount() + 1;
+	            	int ID = AdminItemDAO.getInstanitemDAO().getEmployeeCount() + 1;
+	            	int ADID = AdminItemDAO.getInstanitemDAO().getAdminCount() + 1;
 	                String NAME = textFieldUsername.getText();
 	                String GMAIL = textFieldGmail.getText();
 	                String PASSWORD = textFieldPassword.getText();
@@ -153,11 +169,11 @@ public class RegisterScreen extends JFrame {
 	                // Modify the username based on selection
 	                if (rdbtnCashier.isSelected() && PASSWORD.equals(CONFIRM)) {
 	                	 employeeModel user = new employeeModel(ID, NAME, GMAIL, PASSWORD , PHONENUMBER, WORKHOUR);
-	 	                itemDAO.getInstanitemDAO().insertloginCashier(user);
+	 	                AdminItemDAO.getInstanitemDAO().insertloginCashier(user);
 	 	               clearFields();
 	 	                } else if (rdbtnAdmin.isSelected() && PASSWORD.equals(CONFIRM)) {
 	 	                	 adminModel admin = new adminModel(ADID,NAME, GMAIL, PASSWORD);
-	 		                itemDAO.getInstanitemDAO().insertloginAdmin(admin);
+	 		                AdminItemDAO.getInstanitemDAO().insertloginAdmin(admin);
 	 		               clearFields();
 	 		                }else {
 	 		                	JOptionPane.showMessageDialog(null, "Mật khẩu không khớp!");
@@ -184,16 +200,30 @@ public class RegisterScreen extends JFrame {
 		lblNewLabel.setBounds(0, 0, 459, 640);
 		contentPane.add(lblNewLabel);	
 		
-		textFieldPhoneNumber = new JTextField();
+		textFieldPhoneNumber = new TextFields();
+		textFieldPhoneNumber.setLabelText("Phone number");
 		textFieldPhoneNumber.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldPhoneNumber.setBounds(185, 302, 248, 37);
+		textFieldPhoneNumber.setBounds(100, 302, 300, 55);
 		contentPane.add(textFieldPhoneNumber);
 		
 		JLabel lblPhonenumber = new JLabel("PhoneNumber");
 		lblPhonenumber.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblPhonenumber.setBounds(10, 302, 158, 37);
-		contentPane.add(lblPhonenumber);
+		lblPhonenumber.setBounds(10, 302, 158, 55);
+	//	contentPane.add(lblPhonenumber);
 		
+
+	JLabel lblNewLabel = new JLabel("");
+        ImageIcon originalIcon = new ImageIcon(Paymentscreen.class.getResource("bgregist.jpg"));
+        Image originalImage = originalIcon.getImage();
+        Image scaledImage = originalImage.getScaledInstance(473, 630, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+        lblNewLabel.setIcon(scaledIcon);
+        lblNewLabel.setBounds(0, 0, 473, 630);
+        contentPane.add(lblNewLabel);
+
+        // Set the background label to the lowest Z order
+        contentPane.setComponentZOrder(lblNewLabel, contentPane.getComponentCount() - 1);
+		setLocationRelativeTo(null);
 		setLocationRelativeTo(null);
 		
 	}
