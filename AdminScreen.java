@@ -1,5 +1,5 @@
 package view;
-
+import view.tabbedpane.*;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
@@ -19,7 +19,8 @@ import model.productModel;
 import view.Style.BackgroundPanel;
 import view.Style.ButtonGradient;
 import view.Style.RoundJTextField;
-
+import view.table.*;
+import view.scroll.*;
 import javax.swing.JTabbedPane; 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -44,7 +45,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.SwingConstants;
 import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
-
+import view.combobox.*;
 public class AdminScreen extends JFrame {
 
 	public static final long serialVersionUID = 1L;
@@ -93,7 +94,7 @@ public class AdminScreen extends JFrame {
 	        // ...
 	    setTitle("Badminton Store");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1100, 750);
+		setBounds(100, 100, 1100, 800);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -105,9 +106,9 @@ public class AdminScreen extends JFrame {
 		    this.setIconImage(imagethemgiohang);
 		}
 
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		MaterialTabbed tabbedPane = new view.tabbedpane.MaterialTabbed();
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		tabbedPane.setBounds(40, 0, 1000, 700);
+		tabbedPane.setBounds(40, 0, 1000, 750);
 		contentPane.add(tabbedPane);
 		Image backgroundImage = Toolkit.getDefaultToolkit().createImage(CashierScreen.class.getResource("bg.jpg"));
         BackgroundPanel panelSale = new BackgroundPanel(backgroundImage);
@@ -144,11 +145,13 @@ public class AdminScreen extends JFrame {
 	    });  
 		
 		JScrollPane scrollPaneTableTotalSalesList = new JScrollPane(TableTotalSalesList);
+		TableCustom.apply(scrollPaneTableTotalSalesList,TableCustom.TableType.MULTI_LINE);
 		scrollPaneTableTotalSalesList.setBounds(10, 129, 975, 194);
 		panelSale.add(scrollPaneTableTotalSalesList);
 		
 		tableModelSale = new DefaultTableModel(new Object[][]{}, new String[]{"ID PRODUCT", "NAME PRODUCT", "PRICE", "QUANTITY", "IDCATEGORY"});
 		TableSalesList = new JTable(tableModelSale);
+		
 		TableSalesList.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TableSalesList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
@@ -180,6 +183,7 @@ public class AdminScreen extends JFrame {
 	    });    
 		
 		JScrollPane scrollPaneTableSalesList = new JScrollPane(TableSalesList);
+		TableCustom.apply(scrollPaneTableSalesList,TableCustom.TableType.MULTI_LINE);
 		scrollPaneTableSalesList.setBounds(10, 502, 975, 76);
 		scrollPaneTableSalesList.setToolTipText("");
 		panelSale.add(scrollPaneTableSalesList);
@@ -391,7 +395,8 @@ public class AdminScreen extends JFrame {
 		textFieldCateID.setBounds(367, 339, 76, 38);
 		panelSale.add(textFieldCateID);
 		
-		JComboBox comboBoxSell = new JComboBox();
+		Combobox comboBoxSell = new Combobox<>();
+		comboBoxSell.setLabeText("Category");
 		
 		comboBoxSell.setFont(new Font("Arial", Font.PLAIN, 16));
 		comboBoxSell.setBounds(739, 24, 144, 43);
@@ -519,6 +524,7 @@ public class AdminScreen extends JFrame {
 		TableTotalManagementList.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		           
 		JScrollPane scrollPaneTotalManagementList = new JScrollPane(TableTotalManagementList);
+		TableCustom.apply(scrollPaneTotalManagementList,TableCustom.TableType.MULTI_LINE);
 		scrollPaneTotalManagementList.setBounds(10, 117, 995, 200);
 		panelManageProduct.add(scrollPaneTotalManagementList);		
 		TableDachSachTongManage();
@@ -804,6 +810,7 @@ public class AdminScreen extends JFrame {
 		panelManageCashier.setLayout(null);
 		
 		JScrollPane scrollPaneTableEmployeeList = new JScrollPane(TableEmployeeList);
+		TableCustom.apply(scrollPaneTableEmployeeList,TableCustom.TableType.MULTI_LINE);
 		scrollPaneTableEmployeeList.setBounds(10, 129, 975, 194);
 		panelManageCashier.add(scrollPaneTableEmployeeList);
 		
