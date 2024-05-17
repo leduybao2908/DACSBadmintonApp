@@ -15,11 +15,34 @@ import model.productModel;
 
 public class CashierItemDAO {
 
-	public static AdminItemDAO getInstanitemDAO()
+	public static CashierItemDAO getInstanitemDAO()
 	{
-	return new AdminItemDAO();
+	return new CashierItemDAO();
 	}
 	
+	public int inserttablesell(ItemModelSell t) {			
+		try {
+			  Connection con = JDBCUtil.getConnection();
+			  String sql = "INSERT INTO productcart (ProductIDcart ,Namesellcart,Pricecart, StockQuantitycart, categoryIdcart) " +
+						   "VALUES (?, ?, ?, ?, ?)";
+								
+			  try (PreparedStatement pst = con.prepareStatement(sql)) {
+				  pst.setInt(1, t.getProductIDcart());
+				  pst.setString(2, t.getNamecart());
+				  pst.setFloat(3, t.getPricecart());
+				  pst.setFloat(4, t.getStockQuantitycart());
+				  pst.setInt(5, t.getCategoryIdcart());
+
+				  int result = pst.executeUpdate();			            
+				  return result;
+			  }
+		  } catch (Exception e) {
+			  e.printStackTrace();
+			  JOptionPane.showMessageDialog(null, "Cannot insert item, please check information.");
+		  }
+		  return 0;
+  }				
+  
 	public ArrayList<productModel> selectAll() {	
 		 ArrayList<productModel> result = new ArrayList<productModel>();
      try {
@@ -43,6 +66,34 @@ public class CashierItemDAO {
      }
   return result;
 	    }	
+		public ArrayList<productModel> selectCategory(int CateID) {
+			ArrayList<productModel> result = new ArrayList<>();
+   
+			   try {
+				   Connection con = JDBCUtil.getConnection();
+				   String sql = "SELECT * FROM products WHERE categoryId LIKE ?";
+				   
+				   try (PreparedStatement pst = con.prepareStatement(sql)) {
+					   pst.setInt(1, CateID);
+   
+					   ResultSet rs = pst.executeQuery();
+					   
+					   while (rs.next()) {
+						   int ProductID = rs.getInt("ProductID");
+							int categoryId = rs.getInt("categoryId");
+							String Name = rs.getString("Name");
+							int StockQuantity = rs.getInt("StockQuantity");
+							float Price = rs.getFloat("Price");
+   
+						   productModel item = new productModel(ProductID, Name, Price, StockQuantity, categoryId);
+						   result.add(item);
+					   }
+				   }
+			   } catch (Exception e) {
+				   e.printStackTrace();
+			   }
+			   return result;
+			   }
 	
 	public ArrayList<ItemModelSell> selectProductCart() {	
 		 ArrayList<ItemModelSell> result = new ArrayList<ItemModelSell>();
@@ -137,4 +188,31 @@ return result;
 	    }
 	    return 0;
 	}
+
+	public int  updateWorkHours(String userName)
+	{	try {
+		Connection con = JDBCUtil.getConnection();
+		String sql ="UPDATE employees SET WorkHours = WorkHours + 1 WHERE Name = ?";
+		PreparedStatement preparedStatement = con.prepareStatement(sql);
+		preparedStatement.setString(1,userName);
+
+		int rowsAffected = preparedStatement.executeUpdate();
+
+	// Kiểm tra xem cập nhật đã thành công hay không
+	if (rowsAffected > 0) {
+		System.out.println("Cập nhật WorkHours thành công cho EmployeeID " + userName);
+	} else {
+		System.out.println("Không có bản ghi nào được cập nhật");
+	}
+
+	// Đóng kết nối và các tài nguyên liên quan
+	preparedStatement.close();
+	con.close();
+	} catch (Exception e) {
+		// TODO: handle exception
+	}
+		
+	return 0;
+	}
+	
 }
