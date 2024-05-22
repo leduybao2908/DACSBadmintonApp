@@ -23,6 +23,9 @@ import model.productModel;
 import view.Style.BackgroundPanel;
 import view.Style.ButtonGradient;
 import view.Style.RoundJTextField;
+import view.combobox.Combobox;
+import view.table.TableCustom;
+
 import javax.swing.JTabbedPane; 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -113,6 +116,7 @@ public class CashierScreen extends JFrame {
 		TableTotalSalesList = new JTable(tableModel);
 		TableTotalSalesList.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		JScrollPane scrollPaneTableTotalSalesList = new JScrollPane(TableTotalSalesList);
+		TableCustom.apply(scrollPaneTableTotalSalesList,TableCustom.TableType.MULTI_LINE);
 		scrollPaneTableTotalSalesList.setBounds(10, 129, 975, 194);
 		panelSale.add(scrollPaneTableTotalSalesList);
 		TableTotalSalesList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -171,6 +175,7 @@ public class CashierScreen extends JFrame {
 	    });    
 		
 		JScrollPane scrollPaneTableSalesList = new JScrollPane(TableSalesList);
+		TableCustom.apply(scrollPaneTableSalesList,TableCustom.TableType.MULTI_LINE);
 		scrollPaneTableSalesList.setBounds(10, 502, 975, 76);
 		scrollPaneTableSalesList.setToolTipText("");
 		panelSale.add(scrollPaneTableSalesList);
@@ -407,8 +412,12 @@ public class CashierScreen extends JFrame {
 	            	openpaymentscreenn();
 	            }
 	        });
-		JComboBox comboBoxSell = new JComboBox();
-comboBoxSell.setBounds(739, 28, 144, 30);
+		
+		Combobox comboBoxSell = new Combobox<>();
+		comboBoxSell.setLabeText("Category");
+		comboBoxSell.setFont(new Font("Arial", Font.PLAIN, 16));
+		comboBoxSell.setBounds(739, 24, 144, 43);
+
 
 comboBoxSell.addItem("");
 comboBoxSell.addItem("Vợt");
@@ -589,7 +598,6 @@ timer.start(); // Bắt đầu đếm thời gian khi khởi động ứng dụn
 		
 	public void refreshTable() {
 	    TableDachSachTongSell();		  
-		TableMua();  
 	}
 	/*
 	public void updateTextTongTienManage(float newTotal) {
