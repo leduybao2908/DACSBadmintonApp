@@ -119,30 +119,39 @@ public class AdminScreen extends JFrame {
 		TableTotalSalesList.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TableTotalSalesList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
-	        public void valueChanged(ListSelectionEvent e) {
-	            // Get the selected row index
-	            int selectedRow = TableTotalSalesList.getSelectedRow();
-	            // Check if a row is selected
-	            if (selectedRow != -1) {
-
-	            	Object ProductID = TableTotalSalesList.getValueAt(selectedRow, 0);
-	                Object Name = TableTotalSalesList.getValueAt(selectedRow, 1);
-	                Object Price = TableTotalSalesList.getValueAt(selectedRow, 2);
-	                Object StockQuantity = TableTotalSalesList.getValueAt(selectedRow, 3);
-	                Object categoryId = TableTotalSalesList.getValueAt(selectedRow, 4);
-	                
-	                textFieldIDItemSell.setText(ProductID.toString());
-	                textFieldNameItemSell.setText(Name.toString());	 
-	                textFieldCountSellWarehouse.setText(StockQuantity.toString());	 
-	                textFieldCostSell.setText(Price.toString());
-	                textFieldCateID.setText(categoryId.toString());
-	            }
-	        }
-	    });  
+			public void valueChanged(ListSelectionEvent e) {
+				// Get the selected row index
+				int selectedRow = TableTotalSalesList.getSelectedRow();
+				// Check if a row is selected and within bounds
+				if (selectedRow != -1 && selectedRow < TableTotalSalesList.getRowCount()) {
+					// Debug print statements
+				
+		
+					// Ensure the selected row has the correct number of columns
+					if (TableTotalSalesList.getColumnCount() >= 5) {
+						Object ProductID = TableTotalSalesList.getValueAt(selectedRow, 0);
+						Object Name = TableTotalSalesList.getValueAt(selectedRow, 1);
+						Object Price = TableTotalSalesList.getValueAt(selectedRow, 2);
+						Object StockQuantity = TableTotalSalesList.getValueAt(selectedRow, 3);
+						Object categoryId = TableTotalSalesList.getValueAt(selectedRow, 4);
+		
+						textFieldIDItemSell.setText(ProductID != null ? ProductID.toString() : "");
+						textFieldNameItemSell.setText(Name != null ? Name.toString() : "");
+						textFieldCountSellWarehouse.setText(StockQuantity != null ? StockQuantity.toString() : "");
+						textFieldCostSell.setText(Price != null ? Price.toString() : "");
+						textFieldCateID.setText(categoryId != null ? categoryId.toString() : "");
+					} else {
+						System.err.println("The table does not have enough columns.");
+					}
+				} else {
+					System.err.println("No valid row selected or selected row out of bounds.");
+				}
+			}
+		});
 		
 		JScrollPane scrollPaneTableTotalSalesList = new JScrollPane(TableTotalSalesList);
 		TableCustom.apply(scrollPaneTableTotalSalesList,TableCustom.TableType.MULTI_LINE);
-		scrollPaneTableTotalSalesList.setBounds(10, 129, 975, 194);
+		scrollPaneTableTotalSalesList.setBounds(10, 90, 975, 194);
 		panelSale.add(scrollPaneTableTotalSalesList);
 		
 		tableModelSale = new DefaultTableModel(new Object[][]{}, new String[]{"ID PRODUCT", "NAME PRODUCT", "PRICE", "QUANTITY", "IDCATEGORY"});
@@ -150,44 +159,67 @@ public class AdminScreen extends JFrame {
 		
 		TableSalesList.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		TableSalesList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			@Override
-	        public void valueChanged(ListSelectionEvent e) {
-	            // Get the selected row index
-	            int selectedRow = TableSalesList.getSelectedRow();
-	            // Check if a row is selected
-	            if (selectedRow != -1) {
-	                // Get data from the selected row
-	                Object iditem = TableSalesList.getValueAt(selectedRow, 0);
-	                Object nameitem = TableSalesList.getValueAt(selectedRow, 1);
-	                Object costinput = TableSalesList.getValueAt(selectedRow, 2);
-	                Object  count = TableSalesList.getValueAt(selectedRow, 3);
-	                Object  countofTableTotalSalesList = TableTotalSalesList.getValueAt(selectedRow, 3);
-	                Object categoryId = TableSalesList.getValueAt(selectedRow, 4);
+		    @Override
+		    public void valueChanged(ListSelectionEvent e) {
+		        // Get the selected row index
+		        int selectedRow = TableSalesList.getSelectedRow();
+		        // Check if a row is selected
+		        if (selectedRow != -1) {
+		            // Get data from the selected row
+		            Object iditem = TableSalesList.getValueAt(selectedRow, 0);
+		            int idproductselect;
+		            if (iditem instanceof Integer) {
+		                idproductselect = (Integer) iditem;
+		            } else if (iditem instanceof String) {
+		                try {
+		                    idproductselect = Integer.parseInt((String) iditem);
+		                } catch (NumberFormatException ex) {
+		                    ex.printStackTrace();
+		                    return;
+		                }
+		            } else {
+		                System.err.println("Unexpected type: " + iditem.getClass().getName());
+		                return;
+		            }
 
-	                // Display data in TextFields
-	                textFieldIDItemSell.setText(iditem.toString());
-	                textFieldNameItemSell.setText(nameitem.toString());	 
-	                textFieldCountSellWarehouse.setText(countofTableTotalSalesList.toString());	
-	                textFieldCountNeedBuy.setText(count.toString());	
-	                textFieldCostSell.setText(costinput.toString());
-					textFieldCateID.setText(categoryId.toString());
+		            Object nameitem = TableSalesList.getValueAt(selectedRow, 1);
+		            Object costinput = TableSalesList.getValueAt(selectedRow, 2);
+		            Object count = TableSalesList.getValueAt(selectedRow, 3);
+		            Object countofTableTotalSalesList = AdminItemDAO.getInstanitemDAO().getStockQuantityByProductID(idproductselect);
+		            Object categoryId = TableSalesList.getValueAt(selectedRow, 4);
 
-	                int countbfupdate = Integer.parseInt(textFieldCountSellWarehouse.getText());
-	                int countadd = Integer.parseInt(textFieldCountNeedBuy.getText());
-	            }
-	        }
-	    });    
+		            // Display data in TextFields
+		            textFieldIDItemSell.setText(iditem.toString());
+		            textFieldNameItemSell.setText(nameitem.toString());     
+		            textFieldCountSellWarehouse.setText(countofTableTotalSalesList.toString());    
+		            textFieldCountNeedBuy.setText(count.toString());    
+		            textFieldCostSell.setText(costinput.toString());
+		            textFieldCateID.setText(categoryId.toString());
+
+		            int countbfupdate;
+		            int countadd;
+		            try {
+		                countbfupdate = Integer.parseInt(textFieldCountSellWarehouse.getText());
+		                countadd = Integer.parseInt(textFieldCountNeedBuy.getText());
+		            } catch (NumberFormatException ex) {
+		                ex.printStackTrace();
+		                return;
+		            }
+		        }
+		    }
+		});
+
 		
 		JScrollPane scrollPaneTableSalesList = new JScrollPane(TableSalesList);
 		TableCustom.apply(scrollPaneTableSalesList,TableCustom.TableType.MULTI_LINE);
-		scrollPaneTableSalesList.setBounds(10, 502, 975, 76);
+		scrollPaneTableSalesList.setBounds(10, 456, 975, 122);
 		scrollPaneTableSalesList.setToolTipText("");
 		panelSale.add(scrollPaneTableSalesList);
 		TableDachSachTongSell();
 		
 		JButton ButtonAddToCart = new view.ButtonGradient();
 		ButtonAddToCart.setText("ADD TO CART");	
-		ButtonAddToCart.setBounds(222, 452, 221, 40);
+		ButtonAddToCart.setBounds(198, 406, 221, 40);
 		ButtonAddToCart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("Cart_icon.png"))));
 		ButtonAddToCart.addActionListener(new ActionListener() {
             @Override
@@ -253,50 +285,50 @@ public class AdminScreen extends JFrame {
 		textFieldIDItemSell = new JTextField();
 		textFieldIDItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldIDItemSell.setColumns(10);
-		textFieldIDItemSell.setBounds(172, 339, 76, 38);
+		textFieldIDItemSell.setBounds(172, 294, 76, 38);
 		panelSale.add(textFieldIDItemSell);
 		
 		textFieldNameItemSell = new JTextField();
 		textFieldNameItemSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldNameItemSell.setColumns(10);
-		textFieldNameItemSell.setBounds(172, 393, 271, 38);
+		textFieldNameItemSell.setBounds(172, 358, 271, 38);
 		panelSale.add(textFieldNameItemSell);
 		
 		textFieldCostSell = new JTextField();
 		textFieldCostSell.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCostSell.setColumns(10);
-		textFieldCostSell.setBounds(698, 339, 221, 38);
+		textFieldCostSell.setBounds(698, 293, 221, 38);
 		panelSale.add(textFieldCostSell);
 		
 		textFieldCountNeedBuy = new JTextField();
 		textFieldCountNeedBuy.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCountNeedBuy.setColumns(10);
-		textFieldCountNeedBuy.setBounds(843, 393, 76, 38);
+		textFieldCountNeedBuy.setBounds(843, 347, 76, 38);
 		panelSale.add(textFieldCountNeedBuy);
 		
 		JLabel LabelIdItemSell = new JLabel("ID ITEM");
 		LabelIdItemSell.setFont(new Font("Tahoma", Font.BOLD, 16));
-		LabelIdItemSell.setBounds(52, 333, 95, 44);
+		LabelIdItemSell.setBounds(52, 294, 95, 44);
 		panelSale.add(LabelIdItemSell);
 		
 		JLabel LabelNameItemSell = new JLabel("ITEM NAME");
 		LabelNameItemSell.setFont(new Font("Tahoma", Font.BOLD, 16));
-		LabelNameItemSell.setBounds(52, 387, 135, 44);
+		LabelNameItemSell.setBounds(52, 355, 135, 44);
 		panelSale.add(LabelNameItemSell);
 		
 		JLabel lblCostSell = new JLabel("ITEM PRICE");
 		lblCostSell.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblCostSell.setBounds(555, 333, 116, 44);
+		lblCostSell.setBounds(555, 287, 116, 44);
 		panelSale.add(lblCostSell);
 		
 		JLabel LabelCountSell = new JLabel("QUANTITY");
 		LabelCountSell.setFont(new Font("Tahoma", Font.BOLD, 16));
-		LabelCountSell.setBounds(555, 387, 95, 44);
+		LabelCountSell.setBounds(555, 341, 95, 44);
 		panelSale.add(LabelCountSell);
 		
 		textFieldCountSellWarehouse = new JTextField();
 		textFieldCountSellWarehouse.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		textFieldCountSellWarehouse.setBounds(698, 393, 126, 38);
+		textFieldCountSellWarehouse.setBounds(698, 347, 126, 38);
 		panelSale.add(textFieldCountSellWarehouse);
 		textFieldCountSellWarehouse.setColumns(10);
 		
@@ -358,7 +390,7 @@ public class AdminScreen extends JFrame {
 		
 		btnDeleteItemCart.setIcon(new ImageIcon(AdminScreen.class.getResource("/view/Delete_icon.png")));
 		btnDeleteItemCart.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnDeleteItemCart.setBounds(612, 452, 267, 40);
+		btnDeleteItemCart.setBounds(612, 406, 267, 40);
 		panelSale.add(btnDeleteItemCart);
 		
 		textFieldSearchSell = new JTextField();
@@ -382,13 +414,13 @@ public class AdminScreen extends JFrame {
 		
 		JLabel lblNewLabel = new JLabel("CATE ID");
 		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
-		lblNewLabel.setBounds(267, 339, 76, 38);
+		lblNewLabel.setBounds(281, 294, 76, 38);
 		panelSale.add(lblNewLabel);
 		
 		textFieldCateID = new JTextField();
 		textFieldCateID.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		textFieldCateID.setColumns(10);
-		textFieldCateID.setBounds(367, 339, 76, 38);
+		textFieldCateID.setBounds(367, 297, 76, 38);
 		panelSale.add(textFieldCateID);
 		
 		Combobox comboBoxSell = new Combobox<>();
