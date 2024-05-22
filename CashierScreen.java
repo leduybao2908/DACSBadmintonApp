@@ -14,14 +14,15 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
+
+import dao.AdminItemDAO;
 import dao.CashierItemDAO;
 import model.ItemModelSell;
 import model.productModel;
-import view.BackgroundPanel;
-import view.ButtonGradient;
-import view.RoundJTextField;
-import view.Combobox;
-import view.TableCustom;
+import view.Style.*;
+import view.combobox.Combobox;
+import view.table.TableCustom;
+
 import javax.swing.JTabbedPane; 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -294,7 +295,7 @@ public class CashierScreen extends JFrame {
 		
 		// TẠO NÚT VÀ THAO TÁC VỚI NÚT
 		
-		JButton ButtonAddToCart = new view.ButtonGradient();
+		JButton ButtonAddToCart = new view.Style.ButtonGradient();
 		ButtonAddToCart.setText("ADD TO CART");
 		ButtonAddToCart.setBounds(222, 452, 221, 40);
 		ButtonAddToCart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(CashierScreen.class.getResource("Cart_icon.png"))));
@@ -336,7 +337,7 @@ public class CashierScreen extends JFrame {
 		ButtonAddToCart.setFont(new Font("Tahoma", Font.BOLD, 16));
 		panelSale.add(ButtonAddToCart);
 		
-		JButton btnRefresh =  new view.ButtonGradient();
+		JButton btnRefresh =  new view.Style.ButtonGradient();
 		btnRefresh.setText("REFRESH");
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -347,7 +348,7 @@ public class CashierScreen extends JFrame {
 		btnRefresh.setBounds(739, 623, 126, 40);
 		panelSale.add(btnRefresh);
 		
-		ButtonGradient btnDeleteItemCart = new view.ButtonGradient();
+		ButtonGradient btnDeleteItemCart = new view.Style.ButtonGradient();
 		btnDeleteItemCart.setText("REMOVE FROM CART");
 		
 		btnDeleteItemCart.addActionListener(new ActionListener() {
@@ -386,7 +387,8 @@ public class CashierScreen extends JFrame {
                     }                        
                     int itemid =Integer.valueOf(String.valueOf( TableSalesList.getValueAt(row,0)));                
                     CashierItemDAO.getInstanitemDAO().deletesalecart(itemid); 
-                    tableModelSale.removeRow(row);                     
+                    tableModelSale.removeRow(row);        
+					refreshTable1();             
           }
                   }	                 
                  clearFields();
@@ -398,7 +400,7 @@ public class CashierScreen extends JFrame {
 		btnDeleteItemCart.setBounds(612, 452, 267, 40);
 		panelSale.add(btnDeleteItemCart);
 		
-		ButtonGradient btnFind = new view.ButtonGradient();
+		ButtonGradient btnFind = new view.Style.ButtonGradient();
 		btnFind.setText("SEARCH");
 		btnFind.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -411,7 +413,7 @@ public class CashierScreen extends JFrame {
 		btnFind.setBounds(536, 26, 135, 43);
 		panelSale.add(btnFind);
 		
-		ButtonGradient ButtonBuy = new view.ButtonGradient();
+		ButtonGradient ButtonBuy = new view.Style.ButtonGradient();
 		ButtonBuy.setText("BUY");
 
 		ButtonBuy.setHorizontalAlignment(SwingConstants.LEFT);
@@ -491,7 +493,7 @@ panelSale.add(comboBoxSell);
             }
         });
 
-		ButtonGradient btnChat = new view.ButtonGradient();	
+		ButtonGradient btnChat = new view.Style.ButtonGradient();	
 			btnChat.setText("Chat");
 		btnChat.addActionListener(new ActionListener() {
 			@Override
@@ -623,6 +625,26 @@ timer.start(); // Bắt đầu đếm thời gian khi khởi động ứng dụn
 	public void refreshTable() {
 	    TableDachSachTongSell();		  
 	}
+	public void refreshTable1() {
+        // Xóa tất cả các hàng hiện có trong bảng
+        tableModel.setRowCount(0);
+        // Lấy danh sách sản phẩm từ cơ sở dữ liệu
+        ArrayList<productModel> productItems = AdminItemDAO.getInstanitemDAO().selectAll();
+
+        // Thêm các hàng mới vào mô hình bảng
+        for (productModel product : productItems) {
+            Object[] row = new Object[5];
+            row[0] = product.getProductID();
+            row[1] = product.getName();
+            row[2] = product.getPrice();
+            row[3] = product.getStockQuantity();
+            row[4] = product.getCategoryId();
+            tableModel.addRow(row);
+        }
+
+		
+	 }
+    
 	/*
 	public void updateTextTongTienManage(float newTotal) {
 	    // Format the float value with two decimal places
