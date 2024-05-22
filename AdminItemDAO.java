@@ -469,7 +469,28 @@ public CashierScreen CasheritemDAO;
 	    }
 		
 		// HÀM TÍNH TOÁN
-		
+		public int getStockQuantityByProductID(int productID) {
+		    int stockQuantity = 0;
+
+		    try {
+		        Connection con = JDBCUtil.getConnection();
+		        String sql = "SELECT StockQuantity FROM products WHERE ProductID = ?";
+		        
+		        try (PreparedStatement pst = con.prepareStatement(sql)) {
+		            pst.setInt(1, productID);
+
+		            ResultSet rs = pst.executeQuery();
+		            
+		            if (rs.next()) {
+		                stockQuantity = rs.getInt("StockQuantity");
+		            }
+		        }
+		    } catch (Exception e) {
+		        e.printStackTrace();
+		    }
+		    return stockQuantity;
+		}
+
 		public int getEmployeeCount() {
 		    int count = 0;
 		    try {
