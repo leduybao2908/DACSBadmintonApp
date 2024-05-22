@@ -1,6 +1,5 @@
 package view;
 import java.awt.Color;
-
 import java.awt.EventQueue;  
 import java.awt.Font;
 import java.awt.Image;
@@ -15,17 +14,14 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
-
 import dao.CashierItemDAO;
-
 import model.ItemModelSell;
 import model.productModel;
-import view.Style.BackgroundPanel;
-import view.Style.ButtonGradient;
-import view.Style.RoundJTextField;
-import view.combobox.Combobox;
-import view.table.TableCustom;
-
+import view.BackgroundPanel;
+import view.ButtonGradient;
+import view.RoundJTextField;
+import view.Combobox;
+import view.TableCustom;
 import javax.swing.JTabbedPane; 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -123,53 +119,81 @@ public class CashierScreen extends JFrame {
 			@Override
 	        public void valueChanged(ListSelectionEvent e) {
 	            // Get the selected row index
-	            int selectedRow = TableTotalSalesList.getSelectedRow();
-	            // Check if a row is selected
-	            if (selectedRow != -1) {
-
-	            	Object ProductID = TableTotalSalesList.getValueAt(selectedRow, 0);
-	                Object Name = TableTotalSalesList.getValueAt(selectedRow, 1);
-	                Object Price = TableTotalSalesList.getValueAt(selectedRow, 2);
-	                Object StockQuantity = TableTotalSalesList.getValueAt(selectedRow, 3);
-	                Object categoryId = TableTotalSalesList.getValueAt(selectedRow, 4);
-	                
-	                textFieldIDItemSell.setText(ProductID.toString());
-	                textFieldNameItemSell.setText(Name.toString());	 
-	                textFieldCountSellWarehouse.setText(StockQuantity.toString());	 
-	                textFieldCostSell.setText(Price.toString());
-	                textFieldCateID.setText(categoryId.toString());
-	            }
-	        }
-	    });    
+				int selectedRow = TableTotalSalesList.getSelectedRow();
+				// Check if a row is selected and within bounds
+				if (selectedRow != -1 && selectedRow < TableTotalSalesList.getRowCount()) {
+					// Debug print statements
+				
 		
+					// Ensure the selected row has the correct number of columns
+					if (TableTotalSalesList.getColumnCount() >= 5) {
+						Object ProductID = TableTotalSalesList.getValueAt(selectedRow, 0);
+						Object Name = TableTotalSalesList.getValueAt(selectedRow, 1);
+						Object Price = TableTotalSalesList.getValueAt(selectedRow, 2);
+						Object StockQuantity = TableTotalSalesList.getValueAt(selectedRow, 3);
+						Object categoryId = TableTotalSalesList.getValueAt(selectedRow, 4);
 		
+						textFieldIDItemSell.setText(ProductID != null ? ProductID.toString() : "");
+						textFieldNameItemSell.setText(Name != null ? Name.toString() : "");
+						textFieldCountSellWarehouse.setText(StockQuantity != null ? StockQuantity.toString() : "");
+						textFieldCostSell.setText(Price != null ? Price.toString() : "");
+						textFieldCateID.setText(categoryId != null ? categoryId.toString() : "");
+					} else {
+					}
+				} else {
+				}
+			}
+		});
+				
 		tableModelSale = new DefaultTableModel(new Object[][]{}, new String[]{"ID PRODUCT", "NAME PRODUCT", "PRICE", "QUANTITY", "IDCATEGORY"});
 		TableSalesList = new JTable(tableModelSale);
-
 		TableSalesList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 	        public void valueChanged(ListSelectionEvent e) {
 	            // Get the selected row index
-	            int selectedRow = TableSalesList.getSelectedRow();
-	            // Check if a row is selected
-	            if (selectedRow != -1) {
-	                // Get data from the selected row
-	            	Object iditem = TableSalesList.getValueAt(selectedRow, 0);
-	                Object nameitem = TableSalesList.getValueAt(selectedRow, 1);
-	                Object costinput = TableSalesList.getValueAt(selectedRow, 2);
-	                Object  count = TableSalesList.getValueAt(selectedRow, 3);
-	                Object  countofTableTotalSalesList = TableTotalSalesList.getValueAt(selectedRow, 3);
-	                Object categoryId = TableSalesList.getValueAt(selectedRow, 4);
+				 int selectedRow = TableSalesList.getSelectedRow();
+			        // Check if a row is selected
+			        if (selectedRow != -1) {
+			            // Get data from the selected row
+			            Object iditem = TableSalesList.getValueAt(selectedRow, 0);
+			            int idproductselect;
+			            if (iditem instanceof Integer) {
+			                idproductselect = (Integer) iditem;
+			            } else if (iditem instanceof String) {
+			                try {
+			                    idproductselect = Integer.parseInt((String) iditem);
+			                } catch (NumberFormatException ex) {
+			                    ex.printStackTrace();
+			                    return;
+			                }
+			            } else {
+			                System.err.println("Unexpected type: " + iditem.getClass().getName());
+			                return;
+			            }
 
-	                // Display data in TextFields
-	                textFieldIDItemSell.setText(iditem.toString());
-	                textFieldNameItemSell.setText(nameitem.toString());	 
-	                textFieldCountSellWarehouse.setText(countofTableTotalSalesList.toString());	
-	                textFieldCountNeedBuy.setText(count.toString());	
-	                textFieldCostSell.setText(costinput.toString());
-					textFieldCateID.setText(categoryId.toString());
-	                int countbfupdate = Integer.parseInt(textFieldCountSellWarehouse.getText());
-	                int countadd = Integer.parseInt(textFieldCountNeedBuy.getText());
+			            Object nameitem = TableSalesList.getValueAt(selectedRow, 1);
+			            Object costinput = TableSalesList.getValueAt(selectedRow, 2);
+			            Object count = TableSalesList.getValueAt(selectedRow, 3);
+			            Object countofTableTotalSalesList = CashierItemDAO.getInstanitemDAO().getStockQuantityByProductID(idproductselect);
+			            Object categoryId = TableSalesList.getValueAt(selectedRow, 4);
+
+			            // Display data in TextFields
+			            textFieldIDItemSell.setText(iditem.toString());
+			            textFieldNameItemSell.setText(nameitem.toString());     
+			            textFieldCountSellWarehouse.setText(countofTableTotalSalesList.toString());    
+			            textFieldCountNeedBuy.setText(count.toString());    
+			            textFieldCostSell.setText(costinput.toString());
+			            textFieldCateID.setText(categoryId.toString());
+
+			            int countbfupdate;
+			            int countadd;
+			            try {
+			                countbfupdate = Integer.parseInt(textFieldCountSellWarehouse.getText());
+			                countadd = Integer.parseInt(textFieldCountNeedBuy.getText());
+			            } catch (NumberFormatException ex) {
+			                ex.printStackTrace();
+			                return;
+			            }
 	            }
 	        }
 	    });    
@@ -270,7 +294,7 @@ public class CashierScreen extends JFrame {
 		
 		// TẠO NÚT VÀ THAO TÁC VỚI NÚT
 		
-		JButton ButtonAddToCart = new view.Style.ButtonGradient();
+		JButton ButtonAddToCart = new view.ButtonGradient();
 		ButtonAddToCart.setText("ADD TO CART");
 		ButtonAddToCart.setBounds(222, 452, 221, 40);
 		ButtonAddToCart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(CashierScreen.class.getResource("Cart_icon.png"))));
@@ -312,7 +336,7 @@ public class CashierScreen extends JFrame {
 		ButtonAddToCart.setFont(new Font("Tahoma", Font.BOLD, 16));
 		panelSale.add(ButtonAddToCart);
 		
-		JButton btnRefresh =  new view.Style.ButtonGradient();
+		JButton btnRefresh =  new view.ButtonGradient();
 		btnRefresh.setText("REFRESH");
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -323,7 +347,7 @@ public class CashierScreen extends JFrame {
 		btnRefresh.setBounds(739, 623, 126, 40);
 		panelSale.add(btnRefresh);
 		
-		ButtonGradient btnDeleteItemCart = new view.Style.ButtonGradient();
+		ButtonGradient btnDeleteItemCart = new view.ButtonGradient();
 		btnDeleteItemCart.setText("REMOVE FROM CART");
 		
 		btnDeleteItemCart.addActionListener(new ActionListener() {
@@ -374,7 +398,7 @@ public class CashierScreen extends JFrame {
 		btnDeleteItemCart.setBounds(612, 452, 267, 40);
 		panelSale.add(btnDeleteItemCart);
 		
-		ButtonGradient btnFind = new view.Style.ButtonGradient();
+		ButtonGradient btnFind = new view.ButtonGradient();
 		btnFind.setText("SEARCH");
 		btnFind.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -387,7 +411,7 @@ public class CashierScreen extends JFrame {
 		btnFind.setBounds(536, 26, 135, 43);
 		panelSale.add(btnFind);
 		
-		ButtonGradient ButtonBuy = new view.Style.ButtonGradient();
+		ButtonGradient ButtonBuy = new view.ButtonGradient();
 		ButtonBuy.setText("BUY");
 
 		ButtonBuy.setHorizontalAlignment(SwingConstants.LEFT);
@@ -467,7 +491,7 @@ panelSale.add(comboBoxSell);
             }
         });
 
-		ButtonGradient btnChat = new view.Style.ButtonGradient();	
+		ButtonGradient btnChat = new view.ButtonGradient();	
 			btnChat.setText("Chat");
 		btnChat.addActionListener(new ActionListener() {
 			@Override
