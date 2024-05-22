@@ -507,5 +507,5 @@ public CashierScreen CasheritemDAO;
 		    }
 		    return count;
 		}
-
+		
 }
