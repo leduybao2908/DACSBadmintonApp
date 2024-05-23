@@ -1,4 +1,5 @@
 package view;
+import view.chartjava.*;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
@@ -15,9 +16,13 @@ import dao.AdminItemDAO;
 import model.ItemModelSell;
 import model.employeeModel;
 import model.productModel;
-import view.BackgroundPanel;
-import view.ButtonGradient;
-import view.RoundJTextField;
+import view.Style.BackgroundPanel;
+import view.Style.ButtonGradient;
+import view.Style.RoundJTextField;
+import view.combobox.Combobox;
+import view.tabbedpane.MaterialTabbed;
+import view.table.TableCustom;
+
 import javax.swing.JTabbedPane; 
 import javax.swing.JTable;
 import javax.swing.JLabel;
@@ -102,7 +107,7 @@ public class AdminScreen extends JFrame {
 		    this.setIconImage(imagethemgiohang);
 		}
 
-		MaterialTabbed tabbedPane = new view.MaterialTabbed();
+		MaterialTabbed tabbedPane = new view.tabbedpane.MaterialTabbed();
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		tabbedPane.setBounds(40, 0, 1000, 750);
 		contentPane.add(tabbedPane);
@@ -217,13 +222,14 @@ public class AdminScreen extends JFrame {
 		panelSale.add(scrollPaneTableSalesList);
 		TableDachSachTongSell();
 		
-		JButton ButtonAddToCart = new view.ButtonGradient();
+		JButton ButtonAddToCart = new view.Style.ButtonGradient();
 		ButtonAddToCart.setText("ADD TO CART");	
 		ButtonAddToCart.setBounds(198, 406, 221, 40);
 		ButtonAddToCart.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("Cart_icon.png"))));
 		ButtonAddToCart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+				
             	// Lấy dữ liệu từ bảng vào text
             	int iditemsell = Integer.parseInt(textFieldIDItemSell.getText());
             	int idcategory = Integer.parseInt(textFieldCateID.getText());
@@ -267,7 +273,7 @@ public class AdminScreen extends JFrame {
 		LabelTongTienSell.setFont(new Font("Tahoma", Font.BOLD, 16));
 		panelSale.add(LabelTongTienSell);
 		
-		JButton ButtonBuy = new view.ButtonGradient();
+		JButton ButtonBuy = new view.Style.ButtonGradient();
 		ButtonBuy.setText("BUY");
 		ButtonBuy.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonBuy.setBounds(524, 624, 126, 38);
@@ -332,7 +338,7 @@ public class AdminScreen extends JFrame {
 		panelSale.add(textFieldCountSellWarehouse);
 		textFieldCountSellWarehouse.setColumns(10);
 		
-		JButton btnNewButton = new view.ButtonGradient();
+		JButton btnNewButton = new view.Style.ButtonGradient();
 		btnNewButton.setText("REFRESH");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -343,9 +349,10 @@ public class AdminScreen extends JFrame {
 		btnNewButton.setBounds(739, 623, 126, 40);
 		panelSale.add(btnNewButton);
 		
-		JButton btnDeleteItemCart = new view.ButtonGradient();
+		JButton btnDeleteItemCart = new view.Style.ButtonGradient();
 		btnDeleteItemCart.setText("REMOVE FROM CART");
 		btnDeleteItemCart.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
             	int iditemsell = Integer.parseInt(textFieldIDItemSell.getText());
@@ -381,9 +388,12 @@ public class AdminScreen extends JFrame {
                     }                        
                     int itemid =Integer.valueOf(String.valueOf( TableSalesList.getValueAt(row,0)));                
                     AdminItemDAO.getInstanitemDAO().deletesalecart(itemid); 
-                    tableModelSale.removeRow(row);                     
+                    tableModelSale.removeRow(row);      
+					refreshTable1();               
           }
-                  }	                 
+		  
+                  }	            
+				
                   clearFields();
              }
          });
@@ -399,7 +409,7 @@ public class AdminScreen extends JFrame {
 		panelSale.add(textFieldSearchSell);
 		textFieldSearchSell.setColumns(10);
 		
-		JButton btnSearchSell = new view.ButtonGradient();
+		JButton btnSearchSell = new view.Style.ButtonGradient();
 		btnSearchSell.setText("SEARCH");
 		btnSearchSell.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -507,7 +517,7 @@ public class AdminScreen extends JFrame {
 		LabelTotalManagementList.setBounds(410, 63, 184, 44);
 		panelManageProduct.add(LabelTotalManagementList);
 				
-		JButton ButtonAddManage = new view.ButtonGradient();
+		JButton ButtonAddManage = new view.Style.ButtonGradient();
 		ButtonAddManage.setText("ADD TO INVENTORY");
 		ButtonAddManage.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonAddManage.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("Add_icon.png"))));
@@ -607,7 +617,7 @@ public class AdminScreen extends JFrame {
 		LabelVND.setBounds(594, 610, 40, 44);
 		panelManageProduct.add(LabelVND);
 		
-		JButton ButtonUpdateManage = new view.ButtonGradient();
+		JButton ButtonUpdateManage = new view.Style.ButtonGradient();
 		ButtonUpdateManage.setText("UPDATE QUANTITY OF ITEMS");
 		ButtonUpdateManage.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonUpdateManage.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("update_icon.png"))));
@@ -645,7 +655,7 @@ public class AdminScreen extends JFrame {
 	        });			
 		panelManageProduct.add(ButtonUpdateManage);
 
-		JButton ButtonXoaManage =new view.ButtonGradient();
+		JButton ButtonXoaManage =new view.Style.ButtonGradient();
 		ButtonXoaManage.setText("DELETE ITEMS");
 		ButtonXoaManage.setHorizontalAlignment(SwingConstants.LEFT);
 		ButtonXoaManage.setIcon(new ImageIcon(Toolkit.getDefaultToolkit().createImage(AdminScreen.class.getResource("Delete_icon.png"))));
@@ -664,7 +674,7 @@ public class AdminScreen extends JFrame {
 		textFieldNewCount.setBounds(359, 484, 72, 38);
 		panelManageProduct.add(textFieldNewCount);
 		
-		JButton btnLogout = new view.ButtonGradient();
+		JButton btnLogout = new view.Style.ButtonGradient();
 		btnLogout.setText("LOG OUT");
 		btnLogout.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -685,7 +695,7 @@ public class AdminScreen extends JFrame {
 		panelManageProduct.add(textFieldFindManageProduct);
 		textFieldFindManageProduct.setColumns(10);
 		
-		JButton btnFindMangeProduct =new view.ButtonGradient();
+		JButton btnFindMangeProduct =new view.Style.ButtonGradient();
 		btnFindMangeProduct.setText("SEARCH");
 		btnFindMangeProduct.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -888,7 +898,7 @@ public class AdminScreen extends JFrame {
 		TextEmployeeWorkHour.setBounds(253, 542, 221, 38);
 		panelManageCashier.add(TextEmployeeWorkHour);
 		
-		JButton btnDeleteEmployee = new view.ButtonGradient();
+		JButton btnDeleteEmployee = new view.Style.ButtonGradient();
 		btnDeleteEmployee.setText("DELETE EMPLOYEE");
 		btnDeleteEmployee.addActionListener(new ActionListener() {
 			@Override
@@ -914,7 +924,7 @@ public class AdminScreen extends JFrame {
 		btnDeleteEmployee.setBounds(610, 384, 301, 50);
 		panelManageCashier.add(btnDeleteEmployee);
 		
-		JButton btnUpdateInformation = new view.ButtonGradient();
+		JButton btnUpdateInformation = new view.Style.ButtonGradient();
 		btnUpdateInformation.setText("UPDATE INFORMATION");
 		btnUpdateInformation.addActionListener(new ActionListener() {
 			@Override
@@ -947,7 +957,7 @@ public class AdminScreen extends JFrame {
 		btnUpdateInformation.setBounds(610, 466, 301, 50);
 		panelManageCashier.add(btnUpdateInformation);
 		
-		JButton btnSearchEmployee = new view.ButtonGradient();
+		JButton btnSearchEmployee = new view.Style.ButtonGradient();
 		btnSearchEmployee.setText("SEARCH");
 		btnSearchEmployee.addActionListener(new ActionListener() {
 			@Override
@@ -961,7 +971,7 @@ public class AdminScreen extends JFrame {
 		panelManageCashier.add(btnSearchEmployee);
 		//btn chat
 		
-		JButton btnChat =new view.ButtonGradient();
+		JButton btnChat =new view.Style.ButtonGradient();
 		btnChat.setText("CHAT");
 		btnChat.addActionListener(new ActionListener() {
 			@Override
@@ -1011,7 +1021,11 @@ public class AdminScreen extends JFrame {
 		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblPassword.setBounds(90, 584, 122, 44);
 		panelManageCashier.add(lblPassword);
-		TableEmployeeList();
+		TableEmployeeList();	
+		ChartPanel chatPanel = new ChartPanel();
+		tabbedPane.addTab("REVENUE STATISTICS ", null, chatPanel, null);
+
+		
 	}
 	
 	// HÀM CHỨC NĂNG
@@ -1158,6 +1172,28 @@ public void SelectComboBoxSellTable(int CateID) {
         textFieldCountSellWarehouse.setText("");
         textFieldCountNeedBuy.setText("");
     }
+
+	public void refreshTable1() {
+        // Xóa tất cả các hàng hiện có trong bảng
+        tableModel.setRowCount(0);
+		tableModelEmployeeManage.setRowCount(0);
+        // Lấy danh sách sản phẩm từ cơ sở dữ liệu
+        ArrayList<productModel> productItems = AdminItemDAO.getInstanitemDAO().selectAll();
+
+        // Thêm các hàng mới vào mô hình bảng
+        for (productModel product : productItems) {
+            Object[] row = new Object[5];
+            row[0] = product.getProductID();
+            row[1] = product.getName();
+            row[2] = product.getPrice();
+            row[3] = product.getStockQuantity();
+            row[4] = product.getCategoryId();
+            tableModel.addRow(row);
+        }
+	
+		
+	 }
+    
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
