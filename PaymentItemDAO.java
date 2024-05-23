@@ -1,6 +1,6 @@
 package dao;
 
-import java.sql.Connection;
+import java.sql.Connection; 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,10 +8,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;  
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 import view.Paymentscreen;
 import database.JDBCUtil;
 import model.ItemModelSell;
 import model.billModel;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import model.productModel;
 
 public class PaymentItemDAO {
@@ -69,6 +75,33 @@ return result;
 		    return 0;
 	}
 	
+	public float getTotalCostFromTable() {
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            con = JDBCUtil.getConnection();
+            String sql = "SELECT SUM(StockQuantitycart * Pricecart) AS totalCost FROM productcart";
+            preparedStatement = con.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getFloat("totalCost");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return  0; // Return 0 if there's an error
+    } 
+	
 	public int getBillCount() {
 	    int count = 0;
 	    try {
@@ -105,5 +138,66 @@ return result;
 	    }
 	    return 0;
 	}	
+	
+    public void writeToFile(String filePath, String timebill, int BillId, String namecustomer, String phonenumbercustomer, float moneycustomergive, float totalmoney, float changemoney) {
+        try {
+            // Tạo đối tượng File với đường dẫn cụ thể
+            File file = new File(filePath);
+
+            // Kiểm tra nếu file không tồn tại thì tạo file mới
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            // Sử dụng FileWriter để ghi dữ liệu vào file
+            FileWriter writer = new FileWriter(file, true); // true để ghi tiếp vào file thay vì ghi đè
+            writer.write("Time: " + timebill + "\n");
+            writer.write("Bill ID: " + BillId + "\n");
+            writer.write("Customer Name: " + namecustomer + "\n");
+            writer.write("Customer PhoneNumber: " + phonenumbercustomer + "\n");
+            writer.write("Money Customer Gives: " + moneycustomergive + "\n");
+            writer.write("Total Money: " + totalmoney + "\n");
+            writer.write("Change Money: " + changemoney + "\n");
+
+           
+            writer.write("-----------\n");
+
+            // Đóng FileWriter sau khi ghi xong
+            writer.close();
+
+        } catch (IOException e) {
+            System.out.println("Đã xảy ra lỗi khi ghi vào file.");
+            e.printStackTrace();
+        }
+    }
+    
+    public void writeTableToFile(DefaultTableModel tableModelBill, String filePath) {
+        try {
+            FileWriter writer = new FileWriter(filePath, true);
+            for (int i = 0; i < tableModelBill.getRowCount(); i++) {
+                for (int j = 0; j < tableModelBill.getColumnCount(); j++) {
+                    writer.write(tableModelBill.getValueAt(i, j).toString() + "\t");
+                }
+                writer.write("\n");
+            }
+            writer.write("-----------\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Đã xảy ra lỗi khi ghi vào file.");
+            e.printStackTrace();
+        }
+    }
+
+    public void openFileExplorer(String filePath) {
+        try {
+            // Mở thư mục chứa file trong File Explorer
+            String folderPath = new File(filePath).getParent();
+            ProcessBuilder processBuilder = new ProcessBuilder("explorer.exe", folderPath);
+            processBuilder.start();
+        } catch (IOException e) {
+            System.out.println("Đã xảy ra lỗi khi mở File Explorer.");
+            e.printStackTrace();
+        }
+    }
 	
 }
