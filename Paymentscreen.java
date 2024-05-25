@@ -9,13 +9,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
+import com.barcodelib.barcode.Linear;
 import dao.AdminItemDAO;
 import dao.PaymentItemDAO;
 import database.JDBCUtil;
 import model.ItemModelSell;
 import model.billModel;
 import model.productModel;
+import net.glxn.qrgen.image.ImageType;
 import view.RoundJTextField;
 import model.billitemModel;
 import javax.swing.JLabel;
@@ -25,11 +26,19 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JTextField;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,6 +47,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
+import java.awt.Desktop;
 
 public class Paymentscreen extends JFrame {
 
@@ -50,6 +60,7 @@ public class Paymentscreen extends JFrame {
     public JTable TableBillList;
     private JTextField txtFieldCustomerName;
     private JTextField textFieldCustomerPhone;
+    Image img = null;
 
     public Paymentscreen(AdminScreen adminScreen) {
         this.adminScreen = adminScreen;
@@ -64,7 +75,18 @@ public class Paymentscreen extends JFrame {
             }
         });
         setBounds(100, 100, 1100, 750);
-        contentPane = new JPanel();
+        contentPane = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (img != null) {
+                    // Thay đổi kích thước ảnh ở đây, ví dụ: 300x300
+                    int imgWidth = 300;
+                    int imgHeight = 300;
+                    g.drawImage(img, 50, 50, imgWidth, imgHeight, this);
+                }
+            }
+        };
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
         setContentPane(contentPane);
@@ -116,16 +138,58 @@ public class Paymentscreen extends JFrame {
                 PaymentItemDAO.getInstanitemDAO().deleteProductcart();
                 String FileLink = "C:\\Users\\LE DUY BAO\\Documents\\DACS-HOADON\\HOADON-";
                 String filepath =  FileLink + NameFile;
-                PaymentItemDAO.getInstanitemDAO().writeToFile(filepath, timebill, BillId, namecustomer,phonecustomer,cost,totalprice,costchange);
+                PaymentItemDAO.getInstanitemDAO().writeToFile(filepath, timebill, BillId, namecustomer, phonecustomer, cost, totalprice, costchange);
                 PaymentItemDAO.getInstanitemDAO().openFileExplorer(filepath);
                 PaymentItemDAO.getInstanitemDAO().writeTableToFile(tableModelBill, filepath);
-                
+                try {
+                    File f = new File(filepath);
+                    List<String> allText = Files.readAllLines(f.toPath(), StandardCharsets.UTF_8);
+                    String totaldata = String.join("", allText);
+                    String imagePath = "D:\\22222.png";
+                    ByteArrayOutputStream qrcode = net.glxn.qrgen.QRCode.from(totaldata).to(ImageType.PNG).stream();
+                    FileOutputStream fout = new FileOutputStream(new File(imagePath));
+                    fout.write(qrcode.toByteArray());
+                    fout.flush();
+                    fout.close();
+
+                    Toolkit t = Toolkit.getDefaultToolkit();
+                    Image i = t.getImage(imagePath);
+                    img = i;
+                    contentPane.repaint(); // Trigger repaint of the contentPane to show the image
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
                 SaleTable();
                 clearFields();
-                
             }
         });
         contentPane.add(ButtonCalculateMoney);
+
+        JButton ButtonGetQr = new view.ButtonGradient();
+        ButtonGetQr.setText("Get QR");
+        ButtonGetQr.setFont(new Font("Tahoma", Font.BOLD, 16));
+        ButtonGetQr.setBounds(730, 182, 140, 43);
+        ButtonGetQr.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int BillId = PaymentItemDAO.getInstanitemDAO().getBillCount();
+                    String billIdStr = String.valueOf(BillId);
+                    String filepath = "C:\\Users\\LE DUY BAO\\Documents\\DACS-HOADON\\HOADON-" + billIdStr + ".txt";
+                    File f = new File(filepath);
+                    List<String> allText = Files.readAllLines(f.toPath(), StandardCharsets.UTF_8);
+                    String totaldata = String.join("", allText);
+                    ByteArrayOutputStream qrcode = net.glxn.qrgen.QRCode.from(totaldata).to(ImageType.PNG).stream();
+                    try (FileOutputStream fout = new FileOutputStream(new File("D:\\22222.png"))) {
+                        fout.write(qrcode.toByteArray());
+                    }
+                    Desktop.getDesktop().open(new File("D:\\22222.png")); // Open the QR code image
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        contentPane.add(ButtonGetQr);
 
         textFieldChange = new JTextField();
         textFieldChange.setBounds(425, 632, 255, 40);
@@ -215,21 +279,19 @@ public class Paymentscreen extends JFrame {
         dispose();
     }
 
-    
-
-public static void main(String[] args) {
-    EventQueue.invokeLater(new Runnable() {
-        public void run() {
-            try {
-            //	AdminScreen frame = new AdminScreen();
-               // Now create the ChangeScreen instance
-                Paymentscreen newScreenInstance = new Paymentscreen();
-                newScreenInstance.setLocationRelativeTo(null); 
-                newScreenInstance.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    //	AdminScreen frame = new AdminScreen();
+                    // Now create the ChangeScreen instance
+                    Paymentscreen newScreenInstance = new Paymentscreen();
+                    newScreenInstance.setLocationRelativeTo(null);
+                    newScreenInstance.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-    });
-}
+        });
+    }
 }
